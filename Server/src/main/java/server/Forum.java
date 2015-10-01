@@ -17,17 +17,17 @@ public class Forum extends UnicastRemoteObject implements InterfaceServerForum{
 		subjects = new TreeMap<String, InterfaceSubjectDiscussion>();
 	}
 
-	@Override
+	
 	public InterfaceSubjectDiscussion getSujet(String title) throws RemoteException {
 		return subjects.get(title);
 	}
 
-	@Override
+	
 	public Object[] getTitlesOfSubjects() throws RemoteException {
 		return subjects.keySet().toArray();
 	}
 
-	@Override
+	
 	public void sendSubject(String title) throws RemoteException {
 		subjects.put(title, new Subject(title));		
 	}
