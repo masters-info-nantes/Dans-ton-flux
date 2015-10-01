@@ -1,7 +1,29 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>fr.middleware.dansTonFlux.client</groupId>
-  <artifactId>client</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <name>Dand ton flux client</name>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>fr.middleware.dansTonFlux.client</groupId>
+	<artifactId>client</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>Dand ton flux client</name>
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>2.3.2</version>
+					<configuration>
+						<source>1.7</source>
+						<target>1.7</target>
+						<compilerArgument />
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+	<dependencies>
+		<dependency>
+			 <groupId>com.interfaces.middleware</groupId>
+			 <artifactId>InterfacesClientServer</artifactId>
+			 <version>1.0.0</version>
+		</dependency>
+	</dependencies>
 </project>
