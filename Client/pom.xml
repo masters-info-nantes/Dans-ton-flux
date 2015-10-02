@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>fr.middleware.dansTonFlux.client</groupId>
-	<artifactId>client</artifactId>
+	<groupId>fr.middleware.dansTonFlux.server</groupId>
+	<artifactId>server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Dand ton flux client</name>
+	<name>Dans ton flux server</name>
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -19,11 +19,14 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-	<dependencies>
-		<dependency>
-			 <groupId>com.interfaces.middleware</groupId>
-			 <artifactId>InterfacesClientServer</artifactId>
-			 <version>1.0.0</version>
-		</dependency>
-	</dependencies>
+	
+	 <dependencies>
+      <dependency>
+         <groupId>com.interfaces.middleware</groupId>
+         <artifactId>InterfacesClientServer</artifactId>
+         <scope>system</scope>
+         <version>1.0.0</version>
+         <systemPath>${basedir}/src/lib/InterfacesClientServer-1.0.0.jar</systemPath>
+      </dependency>
+   </dependencies>
 </project>
