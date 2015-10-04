@@ -3,8 +3,6 @@ package server;
 import java.rmi.*;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.rmi.server.*;
-import java.util.*;
 
 
 public class Server {
@@ -15,12 +13,9 @@ public class Server {
 			forum = new Forum();
 			Registry registry = LocateRegistry.createRegistry(8080);
 			registry.bind("Forum", forum);
-			System.out.println("Start");
+			System.out.println("Server start");
 		} catch (RemoteException | AlreadyBoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
-
 }
