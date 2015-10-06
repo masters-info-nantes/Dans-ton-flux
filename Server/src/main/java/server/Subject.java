@@ -13,13 +13,13 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import com.interfaces.middleware.InterfaceDisplayClient;
 import com.interfaces.middleware.InterfaceMessage;
 import com.interfaces.middleware.InterfaceSubjectDiscussion;
 
 public class Subject extends UnicastRemoteObject implements InterfaceSubjectDiscussion{
 	
 	private String title_;
+	private String author_;
 	private SortedSet<InterfaceMessage> messages_;
 	private Map<String, Client> clients_;
 	
@@ -27,11 +27,28 @@ public class Subject extends UnicastRemoteObject implements InterfaceSubjectDisc
 		System.out.println(clients_.get("bbb").getInter());
 	}
 	
-	public Subject(String title_) throws RemoteException {
+	public Subject(String title_, String author_) throws RemoteException {
 		super();
 		this.title_ = title_;
-		clients_ = new TreeMap<String, Client>();
-		messages_ = new TreeSet<InterfaceMessage>();
+		this.author_ = author_;
+		this.clients_ = new TreeMap<String, Client>();
+		this.messages_ = new TreeSet<InterfaceMessage>();
+	}
+
+	public String getAuthor_() {
+		return author_;
+	}
+
+	public void setAuthor_(String author_) {
+		this.author_ = author_;
+	}
+
+	public SortedSet<InterfaceMessage> getMessages_() {
+		return messages_;
+	}
+
+	public void setMessages_(SortedSet<InterfaceMessage> messages_) {
+		this.messages_ = messages_;
 	}
 
 	public boolean registration(Client c) throws RemoteException {

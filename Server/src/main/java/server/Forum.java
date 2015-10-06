@@ -39,7 +39,8 @@ public class Forum extends UnicastRemoteObject implements InterfaceServerForum{
 				
 			String ligne = fileSubjectsTitles.readLine();
 			while (ligne != null){
-				subjects.put(ligne, new Subject(ligne));
+				String[] info = ligne.split("\\|");
+				subjects.put(info[0], new Subject(info[0], info[1]));
 				ligne = fileSubjectsTitles.readLine();
 			}
 			fileSubjectsTitles.close();
@@ -52,7 +53,7 @@ public class Forum extends UnicastRemoteObject implements InterfaceServerForum{
 				ligne = subject.readLine();
 				while (ligne != null){
 					String[] info = ligne.split("\\|");
-					Subject sub = new Subject(entry.getKey());
+					Subject sub = subjects.get(entry.getKey());
 					sub.addMessage(info[0], info[1], new Date(Long.parseLong(info[2])));
 					subjects.put(entry.getKey(), sub);
 					
@@ -114,12 +115,12 @@ public class Forum extends UnicastRemoteObject implements InterfaceServerForum{
 	}
 
 	
-	public boolean sendSubject(String title) throws RemoteException {
+	public boolean sendSubject(String author, String title) throws RemoteException {
 		if(!subjects.containsKey(title)){
-			subjects.put(title, new Subject(title));
+			subjects.put(title, new Subject(title, author));
 			try {
 				BufferedWriter file = new BufferedWriter(new FileWriter("src/main/resources/titles_of_subjects.txt", true));
-				file.write(title + "\n");
+				file.write(title + "|" + author + "\n");
 				file.close();
 				BufferedWriter writer = new BufferedWriter(new FileWriter(new File("src/main/resources/" + title + ".txt")));
 				writer.close();
@@ -211,6 +212,17 @@ public class Forum extends UnicastRemoteObject implements InterfaceServerForum{
 		}
 		else{
 			return null;
+		}
+	}
+
+	@Override
+	public boolean deleteSubject(String author, String title) throws RemoteException {
+		if(subjects.get(title).getAuthor_().equals(author)){
+			subjects.remove(title);
+			return true;
+		}
+		else{
+			return false;
 		}
 	}
 
