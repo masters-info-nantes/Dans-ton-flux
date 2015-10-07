@@ -100,16 +100,6 @@ public class Forum extends UnicastRemoteObject implements InterfaceServerForum{
 		}
 	}
 	
-	public InterfaceSubjectDiscussion getSubject(String title) throws RemoteException {
-		if(!subjects.containsKey(title)){
-			return subjects.get(title);
-		}
-		else{
-			return null;
-		}
-	}
-
-	
 	public Object[] getTitlesOfSubjects() throws RemoteException {
 		return subjects.keySet().toArray();
 	}
@@ -135,12 +125,9 @@ public class Forum extends UnicastRemoteObject implements InterfaceServerForum{
 	}
 	
 	public Object[] connexion(String login, String password, InterfaceDisplayClient display) throws RemoteException{
-		System.out.println(login+ " "+clients.get(login).getInter());
+
 		if(clients.get(login) != null && clients.get(login).getPassword_().equals(password)){
 			clients.get(login).setInter(display);
-			System.out.println(login + "  " +clients.get(login).getInter());
-			
-			subjects.get("sujet1").afficher();
 			return clients.get(login).getSubjects().toArray();
 		}
 		else{

@@ -23,10 +23,6 @@ public class Subject extends UnicastRemoteObject implements InterfaceSubjectDisc
 	private SortedSet<InterfaceMessage> messages_;
 	private Map<String, Client> clients_;
 	
-	public void afficher(){
-		System.out.println(clients_.get("bbb").getInter());
-	}
-	
 	public Subject(String title_, String author_) throws RemoteException {
 		super();
 		this.title_ = title_;
@@ -51,9 +47,9 @@ public class Subject extends UnicastRemoteObject implements InterfaceSubjectDisc
 		this.messages_ = messages_;
 	}
 
-	public boolean registration(Client c) throws RemoteException {
-		if(!clients_.containsKey(c.getName())){
-			clients_.put(c.getName(), c);
+	public boolean registration(Client client) throws RemoteException {
+		if(!clients_.containsKey(client.getName())){
+			clients_.put(client.getName(), client);
 			return true;
 		}
 		else{
@@ -102,8 +98,12 @@ public class Subject extends UnicastRemoteObject implements InterfaceSubjectDisc
 		return messages_.toArray();
 	}
 	
-	public void addMessage(String message, String author, Date date) throws RemoteException{
-		this.messages_.add(new Message(message, author, date));
+	public void addMessage(String message, String author, Date date){
+		try {
+			this.messages_.add(new Message(message, author, date));
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
