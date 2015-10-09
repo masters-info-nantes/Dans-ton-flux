@@ -1,5 +1,13 @@
 package client;
 
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+
+import com.interfaces.middleware.InterfaceServerForum;
+import com.interfaces.middleware.InterfaceSubjectDiscussion;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -24,7 +32,7 @@ import javafx.stage.Stage;
 public class LoginWindow extends Application{
 	
 	@Override
-    public void start(final Stage primaryStage) { 
+    public void start(final Stage primaryStage) throws RemoteException, NotBoundException { 
 		
         primaryStage.setTitle("Dans ton flux!");
         primaryStage.show();
@@ -49,13 +57,13 @@ public class LoginWindow extends Application{
     	Label userName = new Label("User Name:");
     	grid.add(userName, 0, 1);
 
-    	TextField userTextField = new TextField();
+    	final TextField userTextField = new TextField();
     	grid.add(userTextField, 1, 1);
 
     	Label pw = new Label("Password:");
     	grid.add(pw, 0, 2);
 
-    	PasswordField pwBox = new PasswordField();
+    	final PasswordField pwBox = new PasswordField();
     	grid.add(pwBox, 1, 2);
     	
     	Button btnup = new Button("Sign up");
@@ -73,18 +81,52 @@ public class LoginWindow extends Application{
     	final Text actiontarget = new Text();
         grid.add(actiontarget, 1, 6);
         
+        
+        /*forum*/
+		Registry registry = LocateRegistry.getRegistry("localhost", 8080);
+		final InterfaceServerForum forum = (InterfaceServerForum) registry.lookup("Forum");
+
         btn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-            	// TODO auth null si pas existant
-            	 actiontarget.setId("actiontarget");
-                 MainWindow stage = new MainWindow();
-                 stage.start(primaryStage);
+
+            	
+            	Object[] sujet = null;
+				try {
+					sujet = forum.connexion(userTextField.getText(), pwBox.getText(), null);
+				} catch (RemoteException e1) {
+					e1.printStackTrace();
+				}
+            		if(sujet != null){
+						 actiontarget.setId("actiontarget");
+		                 MainWindow stage = new MainWindow();
+		                 stage.start(primaryStage);
+					}else{
+						 actiontarget.setFill(Color.FIREBRICK);
+					     actiontarget.setText("Wrong User name/Password");
+					}
+            	
             }
         });
+        
+        btnup.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+            	try {
+					if(forum.registrationOnForum(userTextField.getText(), pwBox.getText())){
+		            	actiontarget.setFill(Color.GREEN);
+					    actiontarget.setText("Saved");
+					}else{
+						actiontarget.setFill(Color.FIREBRICK);
+					    actiontarget.setText("Error");
+					}
+				} catch (RemoteException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+            }           	
+         });
     }
 	
-	public static void main(String[] args) {
-        launch(args);
-    }
 }
