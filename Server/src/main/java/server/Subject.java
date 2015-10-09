@@ -31,7 +31,15 @@ public class Subject extends UnicastRemoteObject implements InterfaceSubjectDisc
 		this.messages_ = new TreeSet<InterfaceMessage>();
 	}
 
-	public String getAuthor_() {
+	public String getTitle() throws RemoteException{
+		return title_;
+	}
+
+	public void setTitle_(String title_) {
+		this.title_ = title_;
+	}
+
+	public String getAuthor() throws RemoteException{
 		return author_;
 	}
 
