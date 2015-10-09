@@ -1,5 +1,7 @@
 package client;
 
+import java.rmi.RemoteException;
+
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -52,7 +55,9 @@ public class MainWindow extends Application {
     	
     	/** Zone de tape du message de l'utilisateur**/
     	/* Champ de texte*/
-    	final TextArea userMessage = new TextArea();
+    	final TextField userMessage = new TextField();
+    	userMessage.setPrefWidth(1200);
+    
     	/* Boutton d'envoi */
     	final Button sendBtn = new Button("Envoyer");
     	sendBtn.setMinWidth(120.0);
@@ -61,6 +66,12 @@ public class MainWindow extends Application {
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("Message send");
+                try {
+					Client.messageSend("Soiree",userMessage.getText());
+				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
         });
     	/* Grid des messages */
@@ -76,8 +87,8 @@ public class MainWindow extends Application {
     	final ObservableList<String> topics =FXCollections.observableArrayList (
     	    "1er sujet", "2eme sujet", "3eme sujet");
     	topicList.setItems(topics);
-    	topicList.setPrefWidth(175);
-    	topicList.setPrefHeight(350);
+    	//topicList.setPrefWidth(175);
+    	//topicList.setPrefHeight(350);
     	topicList.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent arg0) {
@@ -91,8 +102,8 @@ public class MainWindow extends Application {
     	final ObservableList<String> subscribeTopics = FXCollections.observableArrayList(
     			"mon sujet");
     	subscribeList.setItems(subscribeTopics);
-    	subscribeList.setPrefWidth(175);
-    	subscribeList.setPrefHeight(350);
+    	//subscribeList.setPrefWidth(175);
+    	//subscribeList.setPrefHeight(350);
     	subscribeList.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent arg0) {
@@ -120,4 +131,5 @@ public class MainWindow extends Application {
  public static void main(String[] args) {
         launch(args);
     }
+ 
 }
