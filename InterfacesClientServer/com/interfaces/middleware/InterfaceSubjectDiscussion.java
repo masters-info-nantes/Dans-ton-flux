@@ -13,6 +13,6 @@ public interface InterfaceSubjectDiscussion extends Remote{
 	 * get all the messages of the subject (type of elements: Message)
 	 */
 	public Object[] getMessages() throws RemoteException;
-	public String getAuthor_() throws RemoteException;
-	public String getTitle_() throws RemoteException;
+	public String getAuthor() throws RemoteException;
+	public String getTitle() throws RemoteException;
 }
