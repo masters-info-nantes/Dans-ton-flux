@@ -98,8 +98,13 @@ public class LoginWindow extends Application{
 					e1.printStackTrace();
 				}
             		if(sujet != null){
+            			
+            			Client client = new Client();
+            			client.setUserLogin(userTextField.getText());
+            			client.setSubject(sujet);
+            			
 						 actiontarget.setId("actiontarget");
-		                 MainWindow stage = new MainWindow();
+		                 MainWindow stage = new MainWindow(client,forum);
 		                 stage.start(primaryStage);
 					}else{
 						 actiontarget.setFill(Color.FIREBRICK);

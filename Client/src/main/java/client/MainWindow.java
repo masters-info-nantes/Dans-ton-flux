@@ -2,6 +2,8 @@ package client;
 
 import java.rmi.RemoteException;
 
+import com.interfaces.middleware.InterfaceServerForum;
+
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,7 +22,16 @@ import javafx.stage.Stage;
 public class MainWindow extends Application {
     
 	Boolean sub = false;
+	Client client;
+	InterfaceServerForum forum;
 	
+	public MainWindow(Client client, InterfaceServerForum forum){
+		this.client = client;
+		this.forum = forum;
+	}
+	public static void notify (String title, String message){
+		
+	}
     @Override
     public void start(Stage primaryStage) {
    	
@@ -122,8 +133,6 @@ public class MainWindow extends Application {
     	primaryStage.setScene(scene);
         primaryStage.show();
     }
- public static void main(String[] args) {
-        launch(args);
-    }
+
  
 }
