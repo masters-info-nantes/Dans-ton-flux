@@ -2,34 +2,68 @@ package client;
 
 import java.rmi.RemoteException;
 import java.util.Arrays;
+import java.util.Map;
+import java.util.TreeMap;
 
 import com.interfaces.middleware.InterfaceDisplayClient;
+import com.interfaces.middleware.InterfaceSubjectDiscussion;
 
 public class Client implements InterfaceDisplayClient {
 
 
 	String userLogin;
-	Object[] subjects = null;
+	Map<String, InterfaceSubjectDiscussion> subcribedTopics;
+	
+	
+	
+	public Client() {
+		subcribedTopics = new TreeMap<String, InterfaceSubjectDiscussion>();
+	}
+
+	public String getUserLogin(){
+		return userLogin;
+	}
 	
 	public void setUserLogin(String login){
 		userLogin = login;
 	}
 	
+	public String toString(){
+		System.out.println(subcribedTopics.size());
+		return "";
+	}
 	public void setSubject(Object[] sub){
-		subjects = sub;
+		for(Object o: sub){
+			InterfaceSubjectDiscussion temp = (InterfaceSubjectDiscussion) o;
+			try {
+				subcribedTopics.put(temp.getTitle(), temp);
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	
-	public Object[] getSubject(){
-		return subjects;
+	public InterfaceSubjectDiscussion getSubject(String title){
+		return subcribedTopics.get(title);
 	}
 	
-	public boolean isSubscribed(Object o){
+	public void putSubject(InterfaceSubjectDiscussion subject){
+		try {
+			subcribedTopics.put(subject.getTitle(), subject);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/*public boolean isSubscribed(Object o){
 		for(Object obj:subjects){
 			if (obj.equals(o)) 
 				return true;
 		}
 		return false;
-	}
+	}*/
 	@Override
 	public void show(String subjectTitle, String userMessage) throws RemoteException {
 		// TODO Auto-generated method stub
@@ -51,11 +85,17 @@ public class Client implements InterfaceDisplayClient {
 		
 		sujet.broadcastMessage(userMessage, userLogin);*/
 		
+		
 	};
 	
 	public static void subscribeTopic(String topicTitle) throws RemoteException {
 		//sujet = forum.registrationOnSubject(userLogin, topicTitle);
 
+	}
+
+	public Object[] getSubscirbeTitles() {
+		// TODO Auto-generated method stub
+		return subcribedTopics.keySet().toArray();
 	}
 
 }

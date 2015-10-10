@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import com.interfaces.middleware.InterfaceServerForum;
 import com.interfaces.middleware.InterfaceSubjectDiscussion;
@@ -29,12 +30,16 @@ public class MainWindow extends Application {
 	Client client;
 	InterfaceServerForum forum;
 	List<String> subscribeTitle;
-	Map<String, InterfaceSubjectDiscussion> subcribedTopics;
-	
+	static String selectedNoSubscribeTopic = "";
+	static String selectedSubscribeTopic = "";
+	ObservableList<String> subscribeTopics;
+
 	
 	public MainWindow(Client client, InterfaceServerForum forum){
 		this.client = client;
 		this.forum = forum;
+    	subscribeTitle = new ArrayList<String>();
+
 	}
 	public static void notify (String title, String message){
 		
@@ -54,9 +59,19 @@ public class MainWindow extends Application {
             	if(sub) {
             		System.out.println("unsubscribe");
             		sub = false;
-            		subscribeBtn.setText("Se désabonner");
+            		subscribeBtn.setText("Se desabonner");
             	} else {
-            		System.out.println("subscribe");
+            		System.out.println("subscribe    "+selectedNoSubscribeTopic);
+            		try {
+						 InterfaceSubjectDiscussion temp = forum.registrationOnSubject(client.getUserLogin(), selectedNoSubscribeTopic);
+						 client.putSubject(temp);
+						 subscribeTitle.add(temp.getTitle());
+						 subscribeTopics.add(temp.getTitle());
+						 
+					} catch (RemoteException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
             		sub = true;
             		subscribeBtn.setText("S'abonner");
             	}
@@ -84,6 +99,8 @@ public class MainWindow extends Application {
                 System.out.println("Message send");
                 try {
 					Client.messageSend("Soiree",userMessage.getText());
+					client.toString();
+					client.getSubject(selectedSubscribeTopic).broadcastMessage(selectedSubscribeTopic, userMessage.getText());
 				} catch (RemoteException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -112,6 +129,8 @@ public class MainWindow extends Application {
     	topicList.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent arg0) {
+				System.out.println(selectedNoSubscribeTopic);
+				MainWindow.setNoSubscribeTopic(topicList.getSelectionModel().getSelectedItem());
 	            System.out.println("clicked on " + topicList.getSelectionModel().getSelectedItem());
 	            subscribeBtn.setDisable(false);
 			}
@@ -119,20 +138,18 @@ public class MainWindow extends Application {
     	
     	/* Abonnements */
     	final ListView<String> subscribeList = new ListView<String>();
-    	subscribeTitle = new ArrayList<String>();
-    	Object[] subscribeTitles = client.getSubject();
+    	Object[] subscribeTitles = client.getSubscirbeTitles();
     	for(Object o: subscribeTitles){
-    	    System.out.println(((InterfaceSubjectDiscussion)o).getTitle());
-    	    subscribeTitle.add(((InterfaceSubjectDiscussion)o).getTitle());
-    	    subcribedTopics.put(((InterfaceSubjectDiscussion)o).getTitle(), (InterfaceSubjectDiscussion) o);
+    	    subscribeTitle.add((String)o);
     	} 
-    	final ObservableList<String> subscribeTopics = FXCollections.observableArrayList(subscribeTitle);
+    	subscribeTopics = FXCollections.observableArrayList(subscribeTitle);
     	subscribeList.setItems(subscribeTopics);
     	subscribeList.setPrefWidth(200);
     	subscribeList.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent arg0) {
-	            System.out.println("clicked on " + topicList.getSelectionModel().getSelectedItem());
+				MainWindow.setSubscribeTopic(subscribeList.getSelectionModel().getSelectedItem());
+	            System.out.println("clicked on " + subscribeList.getSelectionModel().getSelectedItem());
 			}
 		});
     	/* Grid des sujets */
@@ -154,6 +171,13 @@ public class MainWindow extends Application {
     	primaryStage.setResizable(false);
         primaryStage.show();
     }
+	protected static void setSubscribeTopic(String selectedItem) {
+		selectedSubscribeTopic = selectedItem;	
+	}
+	
+	public static void setNoSubscribeTopic(String selectedItem) {
+		selectedNoSubscribeTopic = selectedItem;
+	}
 
  
 }
