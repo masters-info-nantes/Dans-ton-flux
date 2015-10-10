@@ -15,7 +15,7 @@ public class MainClient {
 		// TODO Auto-generated method stub
 		
 		Client client = new Client();
-		String userLogin = "Dieu";
+		String userLogin = "Dieu";		
 		
 		new Thread() {
             @Override
@@ -29,13 +29,16 @@ public class MainClient {
         InterfaceServerForum forum;
     	InterfaceSubjectDiscussion subject;
     	Registry registry;
-    	Map<String, InterfaceSubjectDiscussion> subcribedTopics;
     	
+    	// TODO Doublon! regarder lequel est indispensable
 		registry = LocateRegistry.getRegistry("localhost", 8080);
 		forum = (InterfaceServerForum)registry.lookup("Forum");
 		//forum.registrationOnForum(userLogin, "mdp");
 		client.connexion();
 		forum.sendSubject(userLogin, "Soiree");
+		forum.sendSubject(userLogin, "Jeux");
+		forum.deRegistrationOnSubject(userLogin, "Soiree");
+
 	}
 
 }

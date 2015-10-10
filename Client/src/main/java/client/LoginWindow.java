@@ -98,9 +98,20 @@ public class LoginWindow extends Application{
 					e1.printStackTrace();
 				}
             		if(sujet != null){
+            			
+            			Client client = new Client();
+            			client.setUserLogin(userTextField.getText());
+            			client.setSubject(sujet);
+            			
 						 actiontarget.setId("actiontarget");
-		                 MainWindow stage = new MainWindow();
-		                 stage.start(primaryStage);
+		                 MainWindow stage = new MainWindow(client,forum);
+		                 try {
+							stage.start(primaryStage);
+						} catch (RemoteException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+		                 
 					}else{
 						 actiontarget.setFill(Color.FIREBRICK);
 					     actiontarget.setText("Wrong User name/Password");
