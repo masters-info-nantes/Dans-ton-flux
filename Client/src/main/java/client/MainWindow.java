@@ -50,7 +50,7 @@ public class MainWindow extends Application {
     	/** Zone de tape du message de l'utilisateur**/
     	/* Champ de texte*/
     	final TextField userMessage = new TextField();
-    	userMessage.setPrefWidth(1200);
+    	userMessage.setPrefWidth(500);
     
     	/* Boutton d'envoi */
     	final Button sendBtn = new Button("Envoyer");
@@ -117,7 +117,7 @@ public class MainWindow extends Application {
     	rootPane.add(messagePane,1,0);
     	
     	/** Fenetre **/
-    	final Scene scene = new Scene(rootPane, 600, 500);
+    	final Scene scene = new Scene(rootPane, 1200, 500);
         primaryStage.setTitle("Dans ton Flux");
     	primaryStage.setScene(scene);
         primaryStage.show();
