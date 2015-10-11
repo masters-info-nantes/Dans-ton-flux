@@ -93,7 +93,7 @@ public class Subject extends UnicastRemoteObject implements InterfaceSubjectDisc
 			if(!entry.getKey().equals(author)){
 				try {
 					if(entry.getValue().getInter() != null){
-						entry.getValue().getInter().showMessage(this.title_, message, author, d);
+						entry.getValue().getInter().showMessage(this.title_, message, author, d.getTime()+"");
 					}
 				} catch (RemoteException e) {
 					entry.getValue().setInter(null);

@@ -58,7 +58,6 @@ public class MainWindow extends Application {
 	}
 	
 	public static void notifyMessage (String title, String message, String author, String date){
-		System.out.println("ouiiiiiiiiiiiiiiiiiiiii  "+title + "        "+message);
 		if(subscribeList.getSelectionModel().getSelectedItem().equals(title)){
 			messagesDisplay.add(new Message(Long.parseLong(date), author, message));
 		}
