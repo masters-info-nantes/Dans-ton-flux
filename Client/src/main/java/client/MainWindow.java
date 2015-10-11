@@ -57,10 +57,10 @@ public class MainWindow extends Application {
     	subscribeTitle = new ArrayList<String>();
 	}
 	
-	public static void notifyMessage (String title, String message){
+	public static void notifyMessage (String title, String message, String author, String date){
 		System.out.println("ouiiiiiiiiiiiiiiiiiiiii  "+title + "        "+message);
 		if(subscribeList.getSelectionModel().getSelectedItem().equals(title)){
-			messagesDisplay.add(new Message(date, author, message));
+			messagesDisplay.add(new Message(Long.parseLong(date), author, message));
 		}
 	}
 	

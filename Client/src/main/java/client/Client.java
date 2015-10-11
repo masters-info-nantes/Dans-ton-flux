@@ -61,10 +61,10 @@ public class Client extends UnicastRemoteObject implements InterfaceDisplayClien
 		return false;
 	}*/
 	@Override
-	public void showMessage(String subjectTitle, String userMessage) throws RemoteException {
+	public void showMessage(String subjectTitle, String userMessage, String author, String date) throws RemoteException {
 		// TODO Auto-generated method stub
 		// ajoute le message au sujet donné
-		MainWindow.notifyMessage(subjectTitle, userMessage);
+		MainWindow.notifyMessage(subjectTitle, userMessage, author, date);
 		
 	}
 	

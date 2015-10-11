@@ -8,8 +8,7 @@ public interface InterfaceDisplayClient extends Remote{
 	/*
 	 * Allow to display a new message for a subject
 	 */
-	public void showMessage(String sujet, String message, String author, String Date) throws RemoteException;
-	
+	public void showMessage(String sujet, String message, String author, String date) throws RemoteException;	
 	/*
 	 * ALlow to display a new subject
 	 */
