@@ -28,10 +28,6 @@ public class Client implements InterfaceDisplayClient {
 		userLogin = login;
 	}
 	
-	public String toString(){
-		System.out.println(subcribedTopics.size());
-		return "";
-	}
 	public void setSubject(Object[] sub){
 		for(Object o: sub){
 			InterfaceSubjectDiscussion temp = (InterfaceSubjectDiscussion) o;
