@@ -28,10 +28,6 @@ public class Client implements InterfaceDisplayClient {
 		userLogin = login;
 	}
 	
-	public String toString(){
-		System.out.println(subcribedTopics.size());
-		return "";
-	}
 	public void setSubject(Object[] sub){
 		for(Object o: sub){
 			InterfaceSubjectDiscussion temp = (InterfaceSubjectDiscussion) o;
@@ -65,10 +61,10 @@ public class Client implements InterfaceDisplayClient {
 		return false;
 	}*/
 	@Override
-	public void show(String subjectTitle, String userMessage) throws RemoteException {
+	public void showMessage(String subjectTitle, String userMessage) throws RemoteException {
 		// TODO Auto-generated method stub
 		// ajoute le message au sujet donné
-		MainWindow.notify(subjectTitle, userMessage);
+		MainWindow.notifyMessage(subjectTitle, userMessage);
 		
 	}
 	
@@ -96,6 +92,11 @@ public class Client implements InterfaceDisplayClient {
 	public Object[] getSubscirbeTitles() {
 		// TODO Auto-generated method stub
 		return subcribedTopics.keySet().toArray();
+	}
+
+	@Override
+	public void showSubject(String title) throws RemoteException {
+		MainWindow.notifySubject(title);
 	}
 
 }
