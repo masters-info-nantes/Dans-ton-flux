@@ -2,14 +2,16 @@ package client;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import com.interfaces.middleware.InterfaceServerForum;
 import com.interfaces.middleware.InterfaceSubjectDiscussion;
 
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.application.Application;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -18,12 +20,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Callback;
  
 public class MainWindow extends Application {
     
@@ -33,20 +38,28 @@ public class MainWindow extends Application {
 	static String selectedNoSubscribeTopic = "";
 	static String selectedSubscribeTopic = "";
 	ObservableList<String> subscribeTopics;
+	static ObservableList<String> topics;
+	ObservableList<Message> messages = FXCollections.observableArrayList(); 
+	static int i;
+	private TableView<Message> tableOfMessages = new TableView<Message>();
 
 	
 	public MainWindow(Client client, InterfaceServerForum forum){
 		this.client = client;
 		this.forum = forum;
     	subscribeTitle = new ArrayList<String>();
-
 	}
-	public static void notify (String title, String message){
+	
+	public static void notifyMessage (String title, String message){
 		
 	}
+	
+	public static void notifySubject (String title){
+		topics.add(title);
+	}
+	
     @Override
     public void start(Stage primaryStage) throws RemoteException {
-   	
     	/** Boutons d'abonnement**/
     	final Button subscribeBtn = new Button("S'abonner");
     	subscribeBtn.setDisable(true);
@@ -79,10 +92,51 @@ public class MainWindow extends Application {
         });
     	
     	/** Zone du forum**/
-    	final TextArea fluxMessages = new TextArea("Ici le flux du forum");
-    	fluxMessages.setDisable(true);
-    	fluxMessages.setMinWidth(600);
-    	fluxMessages.setMinHeight(697);
+    	tableOfMessages.setEditable(true);
+    	 messages.add(new Message("1444563347657", "khbh", "kkhgvkdddddddddddddddddddddddddddddddddddddddddddddddddddd fg  fg s gs dg sd fg sf g sfd g sdfg sdf g s fg sdf g sdf g sfd g sfd g sg fd g s dfg s hgv"));
+       	 tableOfMessages.setMinWidth(600);
+       	 tableOfMessages.setMaxWidth(600);
+    	 tableOfMessages.setMinHeight(697);
+    	 tableOfMessages.setMaxHeight(697);
+     	
+         TableColumn<Message, String> dateColumn = new TableColumn<Message, String>("Date");
+         dateColumn.setMinWidth(150);
+         dateColumn.setMaxWidth(150);
+         dateColumn.setCellValueFactory(new PropertyValueFactory<Message, String>("date"));
+         
+         TableColumn<Message, String> authorColumn = new TableColumn<Message, String>("Auteur");
+         authorColumn.setMinWidth(100);
+         authorColumn.setMaxWidth(100);
+         authorColumn.setCellValueFactory(new PropertyValueFactory<Message, String>("author"));
+         
+         TableColumn<Message, String> messageColumn = new TableColumn<Message, String>("message");
+         messageColumn.setMinWidth(tableOfMessages.getMinWidth() - 250);
+         messageColumn.setCellValueFactory(new PropertyValueFactory<Message, String>("message"));
+         messageColumn.setCellFactory(new Callback<TableColumn<Message, String>, TableCell<Message,String>>() {
+			
+			@Override
+			public TableCell<Message, String> call(TableColumn<Message, String> arg0) {
+				final TableCell<Message, String> cell = new TableCell<Message, String>() {
+                    private Text text;
+                    @Override
+                    public void updateItem(String item, boolean empty) {
+                         super.updateItem(item, empty);
+                         if (!isEmpty()) {
+                              text = new Text(item.toString());
+                              text.setWrappingWidth(tableOfMessages.getMinWidth() - 257); // Setting the wrapping width to the Text
+                              setGraphic(text);
+                         }
+                    }
+               };
+               return cell;
+			}
+		});
+         
+         tableOfMessages.setItems(messages);
+    	 tableOfMessages.getColumns().addAll(dateColumn, authorColumn, messageColumn);
+
+         //table.getColumns().addAll("hhhh", "jjj", "ooo");
+
     	
     	/** Zone de tape du message de l'utilisateur**/
     	/* Champ de texte*/
@@ -110,7 +164,7 @@ public class MainWindow extends Application {
     	/* Grid des messages */
     	final GridPane messagePane = new GridPane();
     	messagePane.add(subscribeBtn,3,0);
-    	messagePane.add(fluxMessages,0,1,4,1);
+    	messagePane.add(tableOfMessages,0,1,4,1);
     	messagePane.add(userMessage,0,2,3,1);
     	messagePane.add(sendBtn,3,2);
     	
@@ -123,7 +177,7 @@ public class MainWindow extends Application {
     	    System.out.println((String)o);
     	    topicsTitle.add((String)o);
     	} 
-    	final ObservableList<String> topics = FXCollections.observableArrayList(topicsTitle);
+    	topics = FXCollections.observableArrayList(topicsTitle);
     	topicList.setItems(topics);
     	topicList.setPrefWidth(200);
     	topicList.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -180,4 +234,42 @@ public class MainWindow extends Application {
 	}
 
  
+	
+	public static class Message{
+		
+		private final SimpleStringProperty date;
+	    private final SimpleStringProperty author;
+	    private final SimpleStringProperty message;
+
+	    private Message(String date, String author, String message) {
+	    	Date temp = new Date(Long.parseLong(date));
+	        this.date = new SimpleStringProperty(temp.toGMTString());
+	        this.author = new SimpleStringProperty(author);
+	        this.message = new SimpleStringProperty(message);
+	    }
+
+	    public String getDate() {
+	        return date.get();
+	    }
+
+	    public void setDate(String date) {
+	        this.date.set(date);
+	    }
+
+	    public String getAuthor() {
+	        return author.get();
+	    }
+
+	    public void setAuthor(String author) {
+	        this.author.set(author);
+	    }
+
+	    public String getMessage() {
+	        return message.get();
+	    }
+
+	    public void setMessage(String message) {
+	        this.message.set(message);
+	    }
+	}
 }
