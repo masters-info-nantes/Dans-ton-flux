@@ -1,6 +1,7 @@
 package client;
 
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
@@ -8,15 +9,14 @@ import java.util.TreeMap;
 import com.interfaces.middleware.InterfaceDisplayClient;
 import com.interfaces.middleware.InterfaceSubjectDiscussion;
 
-public class Client implements InterfaceDisplayClient {
+public class Client extends UnicastRemoteObject implements InterfaceDisplayClient {
 
 
 	String userLogin;
 	Map<String, InterfaceSubjectDiscussion> subcribedTopics;
 	
-	
-	
-	public Client() {
+	protected Client() throws RemoteException {
+		super();
 		subcribedTopics = new TreeMap<String, InterfaceSubjectDiscussion>();
 	}
 

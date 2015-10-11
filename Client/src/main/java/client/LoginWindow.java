@@ -92,14 +92,21 @@ public class LoginWindow extends Application{
 
             	
             	Object[] sujet = null;
+    			Client client = null;
 				try {
-					sujet = forum.connexion(userTextField.getText(), pwBox.getText(), null);
+					client = new Client();
+				} catch (RemoteException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
+
+				try {
+					sujet = forum.connexion(userTextField.getText(), pwBox.getText(), client);
 				} catch (RemoteException e1) {
 					e1.printStackTrace();
 				}
             		if(sujet != null){
             			
-            			Client client = new Client();
             			client.setUserLogin(userTextField.getText());
             			client.setSubject(sujet);
             			

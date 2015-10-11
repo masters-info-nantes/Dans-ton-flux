@@ -36,19 +36,20 @@ import javafx.util.Callback;
  
 public class MainWindow extends Application {
     
-	Client client;
+	static Client client;
 	InterfaceServerForum forum;
 	List<String> subscribeTitle;
 	static String selectedNoSubscribeTopic = "";
 	static String selectedSubscribeTopic = "";
 	ObservableList<String> subscribeTopics;
 	static ObservableList<String> topics;
-	ObservableList<Message> messagesDisplay = FXCollections.observableArrayList();
+	static ObservableList<Message> messagesDisplay = FXCollections.observableArrayList();
 	Button subscribeBtn;
 	GridPane messagePane;
 	static int i;
 	private TableView<Message> tableOfMessages = new TableView<Message>();
 	GridPane topicPane;
+	static ListView<String> subscribeList;
 	
 	public MainWindow(Client client, InterfaceServerForum forum){
 		this.client = client;
@@ -57,7 +58,10 @@ public class MainWindow extends Application {
 	}
 	
 	public static void notifyMessage (String title, String message){
-		
+		System.out.println("ouiiiiiiiiiiiiiiiiiiiii  "+title + "        "+message);
+		if(subscribeList.getSelectionModel().getSelectedItem().equals(title)){
+			messagesDisplay.add(new Message(date, author, message));
+		}
 	}
 	
 	public static void notifySubject (String title){
@@ -209,7 +213,6 @@ public class MainWindow extends Application {
     	final List<String> topicsTitle = new ArrayList<String>();
     	Object[] titles = forum.getTitlesOfSubjects();
     	for(Object o: titles){
-    	    System.out.println((String)o);
     	    topicsTitle.add((String)o);
     	} 
     	topics = FXCollections.observableArrayList(topicsTitle);
@@ -226,7 +229,7 @@ public class MainWindow extends Application {
 		});
     	
     	/* Abonnements */
-    	final ListView<String> subscribeList = new ListView<String>();
+    	subscribeList = new ListView<String>();
     	Object[] subscribeTitles = client.getSubscirbeTitles();
     	for(Object o: subscribeTitles){
     	    subscribeTitle.add((String)o);
@@ -260,13 +263,10 @@ public class MainWindow extends Application {
 
 	public void changeDisplayMessage(String subjectTitle){
 		messagesDisplay.clear();
-		System.out.println(messagesDisplay.size());
 		InterfaceSubjectDiscussion subject = client.getSubject(subjectTitle);
 		try {
 			for(Object o: subject.getMessages()){
 				InterfaceMessage m = (InterfaceMessage)o;
-				System.out.println("ajout    " + m.getMessage());
-
 				messagesDisplay.add(new Message(m.getDate().getTime(), m.getAuthor(), m.getMessage()));
 			}
 		} catch (RemoteException e) {

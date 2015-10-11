@@ -127,13 +127,21 @@ public class Forum extends UnicastRemoteObject implements InterfaceServerForum{
 	public Object[] connexion(String login, String password, InterfaceDisplayClient display) throws RemoteException{
 
 		Object[] o = null;
-		if(clients.get(login).getInter() == null && clients.get(login).getPassword_().equals(password)){
+		if(clients.get(login) == null){
+			try {
+				throw new Exception("Wrong client");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else if(clients.get(login).getPassword_().equals(password)){
 			clients.get(login).setInter(display);
 			o = clients.get(login).getSubjects().toArray();
 		}
 		else{
 			try {
-				throw new Exception("The Client is already connected");
+				throw new Exception("Wrong password");
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
