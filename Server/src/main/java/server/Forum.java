@@ -189,13 +189,19 @@ public class Forum extends UnicastRemoteObject implements InterfaceServerForum{
 	}
 	
 	public InterfaceSubjectDiscussion registrationOnSubject(String login, String title) throws RemoteException{
+		InterfaceSubjectDiscussion i = null;
 		if(clients.containsKey(login) && subjects.containsKey(title)){
 			clients.get(login).getSubjects().add(subjects.get(title));		
 			try {
 				boolean registration = subjects.get(title).registration(clients.get(login));
 				
 				if(!registration){
-					return null;
+					try {
+						throw new Exception("Client is already registrate on this subject");
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 				else{
 					BufferedWriter writer;
@@ -206,15 +212,22 @@ public class Forum extends UnicastRemoteObject implements InterfaceServerForum{
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
+					i = subjects.get(title);
+
 				}
 			} catch (RemoteException e) {
 				e.printStackTrace();
 			}
-			return subjects.get(title);
 		}
 		else{
-			return null;
+			try {
+				throw new Exception("the subject or the client doesn't exists");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			};
 		}
+		return i;
 	}
 
 	@Override

@@ -115,6 +115,9 @@ public class MainWindow extends Application {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+            		catch(NullPointerException e2){
+            			e2.printStackTrace();
+            		}
             		sub = true;
             		subscribeBtn.setText("S'abonner");
             	}
