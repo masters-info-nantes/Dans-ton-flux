@@ -126,13 +126,20 @@ public class Forum extends UnicastRemoteObject implements InterfaceServerForum{
 	
 	public Object[] connexion(String login, String password, InterfaceDisplayClient display) throws RemoteException{
 
-		if(clients.get(login) != null && clients.get(login).getPassword_().equals(password)){
+		Object[] o = null;
+		if(clients.get(login).getInter() != null && clients.get(login).getPassword_().equals(password)){
 			clients.get(login).setInter(display);
-			return clients.get(login).getSubjects().toArray();
+			o = clients.get(login).getSubjects().toArray();
 		}
 		else{
-			return null;
+			try {
+				throw new Exception("The Client is already connected");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
+		return o;
 	}
 	
 	public boolean registrationOnForum(String login, String password) throws RemoteException{
@@ -210,6 +217,16 @@ public class Forum extends UnicastRemoteObject implements InterfaceServerForum{
 		}
 		else{
 			return false;
+		}
+	}
+
+	public void broadcastSubject(String subject){
+		for(Map.Entry<String, Client> entry : clients.entrySet()){
+			try {
+				entry.getValue().getInter().showSubject(subject);
+			} catch (RemoteException e) {
+				entry.getValue().setInter(null);
+			}
 		}
 	}
 
