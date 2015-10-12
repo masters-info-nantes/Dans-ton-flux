@@ -11,6 +11,7 @@ import javax.xml.ws.handler.MessageContext;
 import com.interfaces.middleware.InterfaceMessage;
 import com.interfaces.middleware.InterfaceServerForum;
 import com.interfaces.middleware.InterfaceSubjectDiscussion;
+import com.sun.webkit.network.about.Handler;
 
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -19,6 +20,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -30,7 +32,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
  
@@ -50,6 +55,8 @@ public class MainWindow extends Application {
 	private TableView<Message> tableOfMessages = new TableView<Message>();
 	GridPane topicPane;
 	static ListView<String> subscribeList;
+	static ListView<String> topicList;
+	private Stage primaryStage;
 	
 	public MainWindow(Client client, InterfaceServerForum forum){
 		this.client = client;
@@ -83,6 +90,7 @@ public class MainWindow extends Application {
     	
     	/** Fenetre **/
     	final Scene scene = new Scene(rootPane, 820, 750);
+    	this.primaryStage = primaryStage;
         primaryStage.setTitle("Dans ton Flux");
     	primaryStage.setScene(scene);
     	primaryStage.setResizable(false);
@@ -97,11 +105,7 @@ public class MainWindow extends Application {
     	subscribeBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-            	boolean sub = false;
-            	/** TODO test si inscrit, ne marche pas now **/
-            	if(sub) {
-            		System.out.println("unsubscribe");
-            		sub = false;
+            	if(client.isSubscribed(topicList.getSelectionModel().getSelectedItem())) {
             		subscribeBtn.setText("Se desabonner");
             	} else {
             		System.out.println("subscribe    "+selectedNoSubscribeTopic);
@@ -110,6 +114,7 @@ public class MainWindow extends Application {
 						 client.putSubject(temp);
 						 subscribeTitle.add(temp.getTitle());
 						 subscribeTopics.add(temp.getTitle());
+						 subscribeBtn.setText("Se desabonner");
 						 
 					} catch (RemoteException e) {
 						// TODO Auto-generated catch block
@@ -118,7 +123,6 @@ public class MainWindow extends Application {
             		catch(NullPointerException e2){
             			e2.printStackTrace();
             		}
-            		sub = true;
             		subscribeBtn.setText("S'abonner");
             	}
             }
@@ -211,7 +215,7 @@ public class MainWindow extends Application {
     public void subjectsZone() throws RemoteException{
 		/** Liste des Sujets latérale**/
     	/* Tout les sujets*/
-    	final ListView<String> topicList = new ListView<String>();
+    	topicList = new ListView<String>();
     	final List<String> topicsTitle = new ArrayList<String>();
     	Object[] titles = forum.getTitlesOfSubjects();
     	for(Object o: titles){
@@ -229,6 +233,50 @@ public class MainWindow extends Application {
 	            subscribeBtn.setDisable(false);
 			}
 		});
+    	
+    	final Button addBtn = new Button("Ajouter");
+    	addBtn.setPrefWidth(100);
+    	addBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	final Stage dialog = new Stage();
+                dialog.initModality(Modality.APPLICATION_MODAL);
+                dialog.initOwner(primaryStage);
+                dialog.setTitle("Ajout d'un nouveau sujet");
+                VBox dialogVbox = new VBox();
+                TextField title = new TextField();
+                Button add = new Button("Ajout");
+                add.setOnAction(new EventHandler<ActionEvent>(){
+					@Override
+					public void handle(ActionEvent arg0) {
+						// TODO Auto-generated method stub
+						try {
+							forum.sendSubject(client.userLogin, title.getText());
+							dialog.hide();
+						} catch (RemoteException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+                });
+                dialogVbox.getChildren().addAll(title,add);
+                Scene dialogScene = new Scene(dialogVbox, 300, 200);
+                dialog.setScene(dialogScene);
+                dialog.show();
+            }
+        });
+    	
+    	final Button deleteBtn = new Button("Supprimer");
+    	deleteBtn.setPrefWidth(100);
+    	deleteBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	//Delete subject
+            }
+    	});
+    	
+    	final HBox buttonBox = new HBox();
+    	buttonBox.getChildren().addAll(addBtn,deleteBtn);
     	
     	/* Abonnements */
     	subscribeList = new ListView<String>();
@@ -251,8 +299,9 @@ public class MainWindow extends Application {
     	topicPane = new GridPane();
     	topicPane.add(new Label("Sujets"),0,0);
     	topicPane.add(topicList,0,1);
-    	topicPane.add(new Label("Abonnements"),0,2);
-    	topicPane.add(subscribeList,0,3);
+    	topicPane.add(buttonBox,0,2);
+    	topicPane.add(new Label("Abonnements"),0,3);
+    	topicPane.add(subscribeList,0,4);
 	}
 
     protected static void setSubscribeTopic(String selectedItem) {
