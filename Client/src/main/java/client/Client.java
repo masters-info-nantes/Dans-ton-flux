@@ -53,13 +53,9 @@ public class Client extends UnicastRemoteObject implements InterfaceDisplayClien
 		}
 	}
 	
-	/*public boolean isSubscribed(Object o){
-		for(Object obj:subjects){
-			if (obj.equals(o)) 
-				return true;
-		}
-		return false;
-	}*/
+	public boolean isSubscribed(String title){
+		return subcribedTopics.containsKey(title);
+	}
 	@Override
 	public void showMessage(String subjectTitle, String userMessage, String author, String date) throws RemoteException {
 		// TODO Auto-generated method stub
