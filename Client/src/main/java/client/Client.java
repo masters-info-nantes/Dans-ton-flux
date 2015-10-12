@@ -95,4 +95,8 @@ public class Client extends UnicastRemoteObject implements InterfaceDisplayClien
 		MainWindow.notifySubject(title);
 	}
 
+	public void deRegistration(String selectedItem) {
+		this.subcribedTopics.remove(selectedItem);
+	}
+
 }

@@ -6,12 +6,10 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import javax.xml.ws.handler.MessageContext;
 
 import com.interfaces.middleware.InterfaceMessage;
 import com.interfaces.middleware.InterfaceServerForum;
 import com.interfaces.middleware.InterfaceSubjectDiscussion;
-import com.sun.webkit.network.about.Handler;
 
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -20,7 +18,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -46,7 +43,7 @@ public class MainWindow extends Application {
 	List<String> subscribeTitle;
 	static String selectedNoSubscribeTopic = "";
 	static String selectedSubscribeTopic = "";
-	ObservableList<String> subscribeTopics;
+	static ObservableList<String> subscribeTopics;
 	static ObservableList<String> topics;
 	static ObservableList<Message> messagesDisplay = FXCollections.observableArrayList();
 	Button subscribeBtn;
@@ -106,7 +103,16 @@ public class MainWindow extends Application {
             @Override
             public void handle(ActionEvent event) {
             	if(client.isSubscribed(topicList.getSelectionModel().getSelectedItem())) {
-            		subscribeBtn.setText("Se desabonner");
+            		subscribeBtn.setText("S'abonner");
+            		client.deRegistration(topicList.getSelectionModel().getSelectedItem());
+            		MainWindow.subscribeTopics.remove(topicList.getSelectionModel().getSelectedItem());
+            		try {
+						forum.deRegistrationOnSubject(client.getUserLogin(), topicList.getSelectionModel().getSelectedItem());
+					} catch (RemoteException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+            		
             	} else {
             		System.out.println("subscribe    "+selectedNoSubscribeTopic);
             		try {
@@ -123,7 +129,6 @@ public class MainWindow extends Application {
             		catch(NullPointerException e2){
             			e2.printStackTrace();
             		}
-            		subscribeBtn.setText("S'abonner");
             	}
             }
         });
@@ -228,6 +233,12 @@ public class MainWindow extends Application {
 			@Override
 			public void handle(MouseEvent arg0) {
 				System.out.println(selectedNoSubscribeTopic);
+				if(client.isSubscribed(topicList.getSelectionModel().getSelectedItem())) {
+            		subscribeBtn.setText("Se desabonner");
+				}
+				else{
+					subscribeBtn.setText("S'abonner");
+				}
 				MainWindow.setNoSubscribeTopic(topicList.getSelectionModel().getSelectedItem());
 	            System.out.println("clicked on " + topicList.getSelectionModel().getSelectedItem());
 	            subscribeBtn.setDisable(false);
@@ -252,6 +263,7 @@ public class MainWindow extends Application {
 						// TODO Auto-generated method stub
 						try {
 							forum.sendSubject(client.userLogin, title.getText());
+							topics.add(title.getText());
 							dialog.hide();
 						} catch (RemoteException e) {
 							// TODO Auto-generated catch block
@@ -271,7 +283,15 @@ public class MainWindow extends Application {
     	deleteBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-            	//Delete subject
+            	try {
+					forum.deleteSubject(client.getUserLogin(), topicList.getSelectionModel().getSelectedItem());
+					subscribeTopics.remove(topicList.getSelectionModel().getSelectedItem());
+					topics.remove(topicList.getSelectionModel().getSelectedItem());
+					client.deRegistration(topicList.getSelectionModel().getSelectedItem());
+				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
     	});
     	

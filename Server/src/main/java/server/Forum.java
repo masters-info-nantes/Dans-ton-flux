@@ -232,7 +232,7 @@ public class Forum extends UnicastRemoteObject implements InterfaceServerForum{
 
 	@Override
 	public boolean deleteSubject(String author, String title) throws RemoteException {
-		if(subjects.get(title).getAuthor().equals(author)){
+		if(subjects.containsKey(title) && subjects.get(title).getAuthor().equals(author)){
 			subjects.remove(title);
 			return true;
 		}
