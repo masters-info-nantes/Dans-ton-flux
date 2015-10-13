@@ -74,17 +74,10 @@ public class Client extends UnicastRemoteObject implements InterfaceDisplayClien
 	
 	public static void messageSend(String topicTitle, String userMessage) throws RemoteException{
 		/*Object[] titres = forum.getTitlesOfSubjects();
-		
-		sujet.broadcastMessage(userMessage, userLogin);*/
-		
-		
+		sujet.broadcastMessage(userMessage, userLogin);*/		
 	};
 	
-	public static void subscribeTopic(String topicTitle) throws RemoteException {
-		//sujet = forum.registrationOnSubject(userLogin, topicTitle);
-
-	}
-
+	
 	public Object[] getSubscirbeTitles() {
 		// TODO Auto-generated method stub
 		return subcribedTopics.keySet().toArray();
