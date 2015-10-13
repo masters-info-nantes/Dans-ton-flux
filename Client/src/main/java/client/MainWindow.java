@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-
 import com.interfaces.middleware.InterfaceMessage;
 import com.interfaces.middleware.InterfaceServerForum;
 import com.interfaces.middleware.InterfaceSubjectDiscussion;
@@ -30,7 +29,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -81,24 +82,28 @@ public class MainWindow extends Application {
     	subjectsZone();
     	
     	/** Pane principal**/
-    	BorderPane rootPane =  new BorderPane();
-    	rootPane.setRight(messagePane);
-    	rootPane.setLeft(topicPane);
+    	BorderPane root =  new BorderPane();
+    	root.setRight(messagePane);
+    	root.setLeft(topicPane);
+
     	
     	/** Fenetre **/
-    	final Scene scene = new Scene(rootPane, 820, 750);
+    	final Scene scene = new Scene(root, 860, 780);
+    	scene.getStylesheets().add(MainWindow.class.getResource("MainWindow.css").toExternalForm());
+    	
     	this.primaryStage = primaryStage;
         primaryStage.setTitle("Dans ton Flux");
     	primaryStage.setScene(scene);
     	primaryStage.setResizable(false);
         primaryStage.show();
+        
     }
     
     public void addSubscribeBtn(){
     	/** Boutons d'abonnement**/
     	subscribeBtn = new Button("S'abonner");
     	subscribeBtn.setDisable(true);
-    	subscribeBtn.setMinWidth(120.0);
+    	subscribeBtn.setMinWidth(200.0);
     	subscribeBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -153,7 +158,7 @@ public class MainWindow extends Application {
         authorColumn.setMaxWidth(100);
         authorColumn.setCellValueFactory(new PropertyValueFactory<Message, String>("author"));
          
-        TableColumn<Message, String> messageColumn = new TableColumn<Message, String>("message");
+        TableColumn<Message, String> messageColumn = new TableColumn<Message, String>("Message");
         messageColumn.setMinWidth(tableOfMessages.getMinWidth() - 250);
         messageColumn.setCellValueFactory(new PropertyValueFactory<Message, String>("message"));
         messageColumn.setCellFactory(new Callback<TableColumn<Message, String>, TableCell<Message,String>>() {
@@ -193,8 +198,8 @@ public class MainWindow extends Application {
     
     	/* Boutton d'envoi */
     	final Button sendBtn = new Button("Envoyer");
-    	sendBtn.setMinWidth(120.0);
-    	sendBtn.setMaxWidth(120.0);
+    	sendBtn.setMinWidth(80.0);
+    	sendBtn.setMaxWidth(80.0);
     	sendBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -211,10 +216,12 @@ public class MainWindow extends Application {
         });
     	/* Grid des messages */
     	messagePane = new GridPane();
-    	messagePane.add(subscribeBtn,3,0);
-    	messagePane.add(tableOfMessages,0,1,4,1);
-    	messagePane.add(userMessage,0,2,3,1);
-    	messagePane.add(sendBtn,3,2);
+    	//messagePane.add(subscribeBtn,3,0);
+    	messagePane.add(tableOfMessages,1,1,4,1);
+    	messagePane.add(userMessage,1,2,3,1);
+    	messagePane.add(sendBtn,4,2);
+    	messagePane.setVgap(20);
+    	messagePane.setHgap(20);
 	}
     
     public void subjectsZone() throws RemoteException{
@@ -246,7 +253,7 @@ public class MainWindow extends Application {
 		});
     	
     	final Button addBtn = new Button("Ajouter");
-    	addBtn.setPrefWidth(100);
+    	addBtn.setPrefWidth(95);
     	addBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -279,7 +286,7 @@ public class MainWindow extends Application {
         });
     	
     	final Button deleteBtn = new Button("Supprimer");
-    	deleteBtn.setPrefWidth(100);
+    	deleteBtn.setPrefWidth(95);
     	deleteBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -297,6 +304,7 @@ public class MainWindow extends Application {
     	
     	final HBox buttonBox = new HBox();
     	buttonBox.getChildren().addAll(addBtn,deleteBtn);
+    	buttonBox.setSpacing(10);
     	
     	/* Abonnements */
     	subscribeList = new ListView<String>();
@@ -317,11 +325,22 @@ public class MainWindow extends Application {
 		});
     	/* Grid des sujets */
     	topicPane = new GridPane();
-    	topicPane.add(new Label("Sujets"),0,0);
-    	topicPane.add(topicList,0,1);
-    	topicPane.add(buttonBox,0,2);
-    	topicPane.add(new Label("Abonnements"),0,3);
-    	topicPane.add(subscribeList,0,4);
+    	Pane  blank2 = new Pane();
+    	topicPane.add(blank2,1,0);
+    	Label sujetLab = new Label("Sujets");
+    	sujetLab.setId("Lab");
+    	topicPane.add(sujetLab,1,1);
+    	topicPane.add(topicList,1,2);
+    	topicPane.add(buttonBox,1,3);
+    	topicPane.add(subscribeBtn, 1, 4);
+    	Label aboLab = new Label("Abonnements");
+    	aboLab.setId("Lab");
+    	topicPane.add(aboLab,1,5);
+    	topicPane.add(subscribeList,1,6);
+    	topicPane.setVgap(10);
+    	topicPane.setHgap(10);
+    	Pane  blank = new Pane();
+    	topicPane.add(blank,1,7);
 	}
 
     protected static void setSubscribeTopic(String selectedItem) {
