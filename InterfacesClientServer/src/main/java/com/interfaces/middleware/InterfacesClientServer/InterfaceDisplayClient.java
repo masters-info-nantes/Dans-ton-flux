@@ -1,4 +1,4 @@
-package com.interfaces.middleware;
+package com.interfaces.middleware.InterfacesClientServer;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

@@ -1,9 +1,8 @@
-package com.interfaces.middleware;
+package com.interfaces.middleware.InterfacesClientServer;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-import com.interfaces.middleware.InterfaceSubjectDiscussion;
 
 public interface InterfaceServerForum extends Remote{
 	
