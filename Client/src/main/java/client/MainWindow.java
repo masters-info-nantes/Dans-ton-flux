@@ -18,6 +18,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -34,6 +35,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Callback;
  
@@ -91,6 +93,11 @@ public class MainWindow extends Application {
     	final Scene scene = new Scene(root, 860, 780);
     	scene.getStylesheets().add(MainWindow.class.getResource("MainWindow.css").toExternalForm());
     	
+		//window on the middle of the screen
+		Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+		primaryStage.setX((screenBounds.getWidth() - 860) / 2); 
+		primaryStage.setY((screenBounds.getHeight() - 780) / 2);
+        
     	this.primaryStage = primaryStage;
         primaryStage.setTitle("Dans ton Flux");
     	primaryStage.setScene(scene);
@@ -216,7 +223,6 @@ public class MainWindow extends Application {
         });
     	/* Grid des messages */
     	messagePane = new GridPane();
-    	//messagePane.add(subscribeBtn,3,0);
     	messagePane.add(tableOfMessages,1,1,4,1);
     	messagePane.add(userMessage,1,2,3,1);
     	messagePane.add(sendBtn,4,2);
@@ -261,8 +267,12 @@ public class MainWindow extends Application {
                 dialog.initModality(Modality.APPLICATION_MODAL);
                 dialog.initOwner(primaryStage);
                 dialog.setTitle("Ajout d'un nouveau sujet");
+                
+
+            	
                 VBox dialogVbox = new VBox();
                 TextField title = new TextField();
+                title.setMaxWidth(300);
                 Button add = new Button("Ajout");
                 add.setOnAction(new EventHandler<ActionEvent>(){
 					@Override
@@ -278,8 +288,16 @@ public class MainWindow extends Application {
 						}
 					}
                 });
+                
+                //add blank on the top of the dialog box
+                Pane  blank = new Pane();
+            	dialogVbox.getChildren().addAll(blank);
+            	
                 dialogVbox.getChildren().addAll(title,add);
-                Scene dialogScene = new Scene(dialogVbox, 300, 200);
+                dialogVbox.setSpacing(10);
+                
+                Scene dialogScene = new Scene(dialogVbox, 300, 80);
+                dialogScene.getStylesheets().add(MainWindow.class.getResource("MainWindow.css").toExternalForm());
                 dialog.setScene(dialogScene);
                 dialog.show();
             }

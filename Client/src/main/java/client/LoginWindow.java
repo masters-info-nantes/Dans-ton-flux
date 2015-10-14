@@ -14,6 +14,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -27,6 +28,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class LoginWindow extends Application{
@@ -34,6 +36,11 @@ public class LoginWindow extends Application{
 	@Override
     public void start(final Stage primaryStage) throws RemoteException, NotBoundException { 
 		
+		//window on the middle top of the screen
+		 Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+		 primaryStage.setX((screenBounds.getWidth() - 400) / 2); 
+		 primaryStage.setY((screenBounds.getHeight() - 400) / 2);  
+
         primaryStage.setTitle("Dans ton flux!");
         primaryStage.show();
     	
