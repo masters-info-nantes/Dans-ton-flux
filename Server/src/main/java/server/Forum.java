@@ -10,21 +10,41 @@ import java.rmi.*;
 import java.rmi.server.*;
 import java.util.Date;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import com.interfaces.middleware.InterfaceDisplayClient;
 import com.interfaces.middleware.InterfaceServerForum;
 import com.interfaces.middleware.InterfaceSubjectDiscussion;
 
+import org.mapdb.*;
+
 public class Forum extends UnicastRemoteObject implements InterfaceServerForum{
 	
 	Map<String, Subject> subjects;
 	Map<String, Client> clients;
+	private DB db;
+	private Set<String> dbTopics;
+
 
 	protected Forum() throws RemoteException {
 		super();
 		subjects = new TreeMap<String, Subject>();
 		clients = new TreeMap<String, Client>();
+		this.db = DBMaker.fileDB(new File("storage.db")).closeOnJvmShutdown().transactionDisable().make();
+		
+		if(db.exists("topicList")) {
+			this.dbTopics = this.db.treeSet("topicList");
+			for(String topicName : this.dbTopics) {
+				System.out.println(topicName);;
+			}
+		} else {
+			this.dbTopics = this.db.treeSet("topicList");
+			this.dbTopics.add("titre2");
+			this.dbTopics.add("titre3");
+			this.dbTopics.add("titre4");
+		}
+		
 		getBackSubjects();
 		getBackClients();
 
@@ -114,6 +134,11 @@ public class Forum extends UnicastRemoteObject implements InterfaceServerForum{
 				file.close();
 				BufferedWriter writer = new BufferedWriter(new FileWriter(new File("src/main/resources/" + title + ".txt")));
 				writer.close();
+				for(Map.Entry<String, Client> entry : clients.entrySet()){
+					if(!entry.getValue().getName().equals(author)){
+						entry.getValue().getInter().showSubject(title);
+					}
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

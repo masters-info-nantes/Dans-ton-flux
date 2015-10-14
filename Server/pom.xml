@@ -4,6 +4,7 @@
 	<artifactId>server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Dans ton flux server</name>
+
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -16,17 +17,43 @@
 						<compilerArgument />
 					</configuration>
 				</plugin>
+				
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>exec-maven-plugin</artifactId>
+					<version>1.3.2</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>java</goal>
+							</goals>
+						</execution>
+					</executions>
+						<configuration>
+						<mainClass>server.Server</mainClass>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
-	
-	 <dependencies>
-      <dependency>
-         <groupId>com.interfaces.middleware</groupId>
-         <artifactId>InterfacesClientServer</artifactId>
-         <scope>system</scope>
-         <version>1.0.0</version>
-         <systemPath>${basedir}/src/lib/InterfacesClientServer-1.0.0.jar</systemPath>
-      </dependency>
-   </dependencies>
+	<repositories>
+		<repository>
+	    	<id>sonatype-snapshots</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</repository>
+	</repositories>
+	<dependencies>
+		<dependency>
+			<groupId>com.interfaces.middleware</groupId>
+			<artifactId>InterfacesClientServer</artifactId>
+			<scope>system</scope>
+			<version>1.0.0</version>
+			<systemPath>${basedir}/src/lib/InterfacesClientServer-1.0.0.jar</systemPath>
+   		</dependency>
+   		<dependency>
+     		<groupId>org.mapdb</groupId>
+      		<artifactId>mapdb</artifactId>
+      		<version>2.0.0-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
 </project>
