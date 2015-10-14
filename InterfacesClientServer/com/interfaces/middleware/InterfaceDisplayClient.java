@@ -13,5 +13,7 @@ public interface InterfaceDisplayClient extends Remote{
 	 * ALlow to display a new subject
 	 */
 	public void showSubject(String subject) throws RemoteException;
+	
+	public void deleteSubject(String title) throws RemoteException;
 
 }

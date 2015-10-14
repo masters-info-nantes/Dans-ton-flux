@@ -4,7 +4,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Date;
 
-import com.interfaces.middleware.InterfaceMessage;
+import com.interfaces.middleware.InterfacesClientServer.*;
 
 public class Message extends UnicastRemoteObject implements InterfaceMessage, Comparable<Message>{
 	

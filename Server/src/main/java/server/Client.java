@@ -3,7 +3,7 @@ package server;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.interfaces.middleware.InterfaceDisplayClient;
+import com.interfaces.middleware.InterfacesClientServer.*;
 
 public class Client{
 	

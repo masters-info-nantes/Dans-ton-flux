@@ -14,6 +14,9 @@ public class Server {
 			Registry registry = LocateRegistry.createRegistry(8080);
 			registry.bind("Forum", forum);
 			System.out.println("Server start");
+			while(true){
+				
+			}
 		} catch (RemoteException | AlreadyBoundException e) {
 			e.printStackTrace();
 		}

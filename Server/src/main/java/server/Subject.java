@@ -13,8 +13,8 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import com.interfaces.middleware.InterfaceMessage;
-import com.interfaces.middleware.InterfaceSubjectDiscussion;
+import com.interfaces.middleware.InterfacesClientServer.*;
+
 
 public class Subject extends UnicastRemoteObject implements InterfaceSubjectDiscussion{
 	

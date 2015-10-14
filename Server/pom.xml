@@ -46,9 +46,7 @@
 		<dependency>
 			<groupId>com.interfaces.middleware</groupId>
 			<artifactId>InterfacesClientServer</artifactId>
-			<scope>system</scope>
-			<version>1.0.0</version>
-			<systemPath>${basedir}/src/lib/InterfacesClientServer-1.0.0.jar</systemPath>
+			<version>0.0.1-SNAPSHOT</version>
    		</dependency>
    		<dependency>
      		<groupId>org.mapdb</groupId>
