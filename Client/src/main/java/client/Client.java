@@ -6,8 +6,10 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.interfaces.middleware.InterfaceDisplayClient;
-import com.interfaces.middleware.InterfaceSubjectDiscussion;
+import com.interfaces.middleware.InterfacesClientServer.InterfaceDisplayClient;
+import com.interfaces.middleware.InterfacesClientServer.InterfaceSubjectDiscussion;
+
+
 
 public class Client extends UnicastRemoteObject implements InterfaceDisplayClient {
 
@@ -90,6 +92,12 @@ public class Client extends UnicastRemoteObject implements InterfaceDisplayClien
 
 	public void deRegistration(String selectedItem) {
 		this.subcribedTopics.remove(selectedItem);
+	}
+
+	@Override
+	public void deleteSubject(String title) throws RemoteException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

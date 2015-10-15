@@ -6,10 +6,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import com.interfaces.middleware.InterfaceMessage;
-import com.interfaces.middleware.InterfaceServerForum;
-import com.interfaces.middleware.InterfaceSubjectDiscussion;
-
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.application.Application;
@@ -38,7 +34,11 @@ import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Callback;
- 
+
+import com.interfaces.middleware.InterfacesClientServer.InterfaceMessage;
+import com.interfaces.middleware.InterfacesClientServer.InterfaceServerForum;
+import com.interfaces.middleware.InterfacesClientServer.InterfaceSubjectDiscussion;
+
 public class MainWindow extends Application {
     
 	static Client client;

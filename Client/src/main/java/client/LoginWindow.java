@@ -5,8 +5,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-import com.interfaces.middleware.InterfaceServerForum;
-import com.interfaces.middleware.InterfaceSubjectDiscussion;
+import com.interfaces.middleware.InterfacesClientServer.InterfaceServerForum;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
