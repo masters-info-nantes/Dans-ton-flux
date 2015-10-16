@@ -118,6 +118,7 @@ public class MainWindow extends Application {
             		subscribeBtn.setText("S'abonner");
             		client.deRegistration(topicList.getSelectionModel().getSelectedItem());
             		MainWindow.subscribeTopics.remove(topicList.getSelectionModel().getSelectedItem());
+            		subscribeTitle.remove(topicList.getSelectionModel().getSelectedItem());
             		try {
 						forum.deRegistrationOnSubject(client.getUserLogin(), topicList.getSelectionModel().getSelectedItem());
 					} catch (RemoteException e) {
@@ -309,10 +310,12 @@ public class MainWindow extends Application {
             @Override
             public void handle(ActionEvent event) {
             	try {
-					forum.deleteSubject(client.getUserLogin(), topicList.getSelectionModel().getSelectedItem());
-					subscribeTopics.remove(topicList.getSelectionModel().getSelectedItem());
-					topics.remove(topicList.getSelectionModel().getSelectedItem());
-					client.deRegistration(topicList.getSelectionModel().getSelectedItem());
+					boolean done = forum.deleteSubject(client.getUserLogin(), topicList.getSelectionModel().getSelectedItem());
+					if(done){
+						client.deRegistration(topicList.getSelectionModel().getSelectedItem());
+						subscribeTopics.remove(topicList.getSelectionModel().getSelectedItem());
+						topics.remove(topicList.getSelectionModel().getSelectedItem());
+					}
 				} catch (RemoteException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

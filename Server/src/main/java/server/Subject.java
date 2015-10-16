@@ -1,17 +1,16 @@
 package server;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+
+import org.mapdb.DB;
 
 import com.interfaces.middleware.InterfacesClientServer.*;
 
@@ -22,13 +21,29 @@ public class Subject extends UnicastRemoteObject implements InterfaceSubjectDisc
 	private String author_;
 	private SortedSet<InterfaceMessage> messages_;
 	private Map<String, Client> clients_;
-	
-	public Subject(String title_, String author_) throws RemoteException {
+	private DB db;
+	private Set<String> dbIdMessages;
+
+	public Subject(String title_, String author_, DB db) throws RemoteException {
 		super();
 		this.title_ = title_;
 		this.author_ = author_;
 		this.clients_ = new TreeMap<String, Client>();
 		this.messages_ = new TreeSet<InterfaceMessage>();
+		this.db = db;
+
+		this.dbIdMessages = this.db.treeSet("topic." + this.title_ + ".id");
+
+		if(db.exists("topic." + this.title_ + ".id")) {
+			
+			for(String s : this.dbIdMessages){
+				if(db.exists("topic." + this.title_ + ".messages." + s)) {
+					String temp = this.db.atomicString("topic." + this.title_ + ".messages." + s).get();
+					String[] info = s.split("\\|");
+					this.messages_.add(new Message(temp, info[0], new Date(Long.parseLong(info[1]))));
+				}
+			}
+		} 
 	}
 
 	public String getTitle() throws RemoteException{
@@ -67,7 +82,7 @@ public class Subject extends UnicastRemoteObject implements InterfaceSubjectDisc
 		
 	public boolean deRegistration(String login) throws RemoteException {
 		if(clients_.containsKey(login)){
-			clients_.remove(login);
+			this.clients_.remove(login);
 			return true;
 		}
 		else{
@@ -79,15 +94,8 @@ public class Subject extends UnicastRemoteObject implements InterfaceSubjectDisc
 		
 		Date d = GregorianCalendar.getInstance().getTime();
 		addMessage(message, author, d);
-		
-		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter(new File("src/main/resources/" + this.title_ + ".txt"), true));
-			writer.write(message + "|" + author + "|" + d.getTime() + "\n");
-			writer.close();
-			
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+		this.dbIdMessages.add(author+"|"+d.getTime());
+		this.db.atomicStringCreate("topic." + this.title_ + ".messages."+author+"|"+d.getTime(), message);
 
 		for(Map.Entry<String, Client> entry : clients_.entrySet()){
 			if(!entry.getKey().equals(author)){
@@ -112,6 +120,12 @@ public class Subject extends UnicastRemoteObject implements InterfaceSubjectDisc
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void deletionIsComming() {
+		for(Map.Entry<String, Client> m:this.clients_.entrySet()){
+			m.getValue().deRegistrationOn(this.title_);
+		}		
 	}
 
 }
