@@ -2,17 +2,22 @@ package server;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Date;
+import java.util.Calendar;
 
 import com.interfaces.middleware.InterfacesClientServer.*;
 
+/**
+ * 
+ * @author Franck
+ * This class is used to manege messages, it implements comparable interface. Messages are storted with the date order, the oldest element arrives in first position.
+ */
 public class Message extends UnicastRemoteObject implements InterfaceMessage, Comparable<Message>{
 	
 	private String message_;
 	private String author_;
-	private Date date_;
+	private Calendar date_;
 
-	protected Message(String message, String author, Date date) throws RemoteException {
+	protected Message(String message, String author, Calendar date) throws RemoteException {
 		super();
 		this.message_ = message;
 		this.author_ = author;
@@ -26,7 +31,7 @@ public class Message extends UnicastRemoteObject implements InterfaceMessage, Co
 	}
 
 	@Override
-	public Date getDate() throws RemoteException {
+	public Calendar getDate() throws RemoteException {
 		// TODO Auto-generated method stub
 		return date_;
 	}
@@ -37,7 +42,10 @@ public class Message extends UnicastRemoteObject implements InterfaceMessage, Co
 		return message_;
 	}
 
-	@Override
+	/**
+	 * Compare messages with date order
+	 * @param message message is compared to this
+	 */
 	public int compareTo(Message message) {
 		int comp = 0;
 		try {

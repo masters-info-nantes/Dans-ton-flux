@@ -5,7 +5,10 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
+import com.interfaces.middleware.InterfacesClientServer.ClientAlreadyRegisteredException;
 import com.interfaces.middleware.InterfacesClientServer.InterfaceServerForum;
+import com.interfaces.middleware.InterfacesClientServer.WrongClientException;
+import com.interfaces.middleware.InterfacesClientServer.WrongPasswordException;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -110,25 +113,25 @@ public class LoginWindow extends Application{
 					sujet = forum.connexion(userTextField.getText(), pwBox.getText(), client);
 				} catch (RemoteException e1) {
 					e1.printStackTrace();
+				} catch (WrongClientException | WrongPasswordException e1) {
+					 actiontarget.setFill(Color.FIREBRICK);
+				     actiontarget.setText("Wrong User name/Password");
 				}
-            		if(sujet != null){
-            			
-            			client.setUserLogin(userTextField.getText());
-            			client.setSubject(sujet);
-            			
-						 actiontarget.setId("actiontarget");
-		                 MainWindow stage = new MainWindow(client,forum);
-		                 try {
-							stage.start(primaryStage);
-						} catch (RemoteException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-		                 
-					}else{
-						 actiontarget.setFill(Color.FIREBRICK);
-					     actiontarget.setText("Wrong User name/Password");
+        		if(sujet != null){
+        			
+        			client.setUserLogin(userTextField.getText());
+        			client.setSubject(sujet);
+        			
+					 actiontarget.setId("actiontarget");
+	                 MainWindow stage = new MainWindow(client,forum);
+	                 try {
+						stage.start(primaryStage);
+					} catch (RemoteException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
 					}
+	                 
+				}
             	
             }
         });
@@ -137,10 +140,12 @@ public class LoginWindow extends Application{
             @Override
             public void handle(ActionEvent e) {
             	try {
-					if(forum.registrationOnForum(userTextField.getText(), pwBox.getText())){
-		            	actiontarget.setFill(Color.GREEN);
+            		try {
+						forum.registrationOnForum(userTextField.getText(), pwBox.getText());
+						actiontarget.setFill(Color.GREEN);
 					    actiontarget.setText("Saved");
-					}else{
+					} catch (WrongClientException | WrongPasswordException
+							| ClientAlreadyRegisteredException e1) {
 						actiontarget.setFill(Color.FIREBRICK);
 					    actiontarget.setText("Error");
 					}

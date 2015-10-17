@@ -9,7 +9,7 @@ public interface InterfaceServerForum extends Remote{
 	/*
 	 * return the subject with the title "title"
 	 */
-	public InterfaceSubjectDiscussion registrationOnSubject(String login, String title) throws RemoteException;
+	public InterfaceSubjectDiscussion registrationOnSubject(String login, String title) throws RemoteException, SubjectDidNotExistsException, ClientDidNotExistsException, ClientAlreadyRegisteredException;
 	/*
 	 * the type of the elements in the array is String
 	 */
@@ -19,21 +19,21 @@ public interface InterfaceServerForum extends Remote{
 	 * the type of the elements in the array is InterfaceSubjectDiscussion
 	 * return null if the client doesn't exists.
 	 */
-	public Object[] connexion(String login, String password, InterfaceDisplayClient display) throws RemoteException;
+	public Object[] connexion(String login, String password, InterfaceDisplayClient display) throws RemoteException, WrongClientException, WrongPasswordException;
 	/*
 	 * return false if the subject already exists or if the user doesn't exist
 	 */
-	public boolean sendSubject(String author, String title) throws RemoteException;
+	public void sendSubject(String author, String title) throws RemoteException, SubjectAlreadyExistsException;
 	/*
 	 * return false if the client already exists
 	 */
-	public boolean registrationOnForum(String login, String password) throws RemoteException;
+	public void registrationOnForum(String login, String password) throws RemoteException, WrongClientException, WrongPasswordException, ClientAlreadyRegisteredException;
 	/*
 	 * return false if the client don't follow the subject
 	 */
-	public boolean deRegistrationOnSubject(String login, String title) throws RemoteException;
+	public void deRegistrationOnSubject(String login, String title) throws RemoteException, ClientDidNotExistsException, SubjectDidNotExistsException;
 	/*
 	 * return false if the client isn't the author of the subject
 	 */
-	public boolean deleteSubject(String author, String title) throws RemoteException;
+	public void deleteSubject(String author, String title) throws RemoteException, SubjectDidNotExistsException, DeletionPermitionDeletionException;
 }

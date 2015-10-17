@@ -35,9 +35,14 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
+import com.interfaces.middleware.InterfacesClientServer.ClientAlreadyRegisteredException;
+import com.interfaces.middleware.InterfacesClientServer.ClientDidNotExistsException;
+import com.interfaces.middleware.InterfacesClientServer.DeletionPermitionDeletionException;
 import com.interfaces.middleware.InterfacesClientServer.InterfaceMessage;
 import com.interfaces.middleware.InterfacesClientServer.InterfaceServerForum;
 import com.interfaces.middleware.InterfacesClientServer.InterfaceSubjectDiscussion;
+import com.interfaces.middleware.InterfacesClientServer.SubjectAlreadyExistsException;
+import com.interfaces.middleware.InterfacesClientServer.SubjectDidNotExistsException;
 
 public class MainWindow extends Application {
     
@@ -120,7 +125,13 @@ public class MainWindow extends Application {
             		MainWindow.subscribeTopics.remove(topicList.getSelectionModel().getSelectedItem());
             		subscribeTitle.remove(topicList.getSelectionModel().getSelectedItem());
             		try {
-						forum.deRegistrationOnSubject(client.getUserLogin(), topicList.getSelectionModel().getSelectedItem());
+						try {
+							forum.deRegistrationOnSubject(client.getUserLogin(), topicList.getSelectionModel().getSelectedItem());
+						} catch (ClientDidNotExistsException
+								| SubjectDidNotExistsException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					} catch (RemoteException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -129,11 +140,19 @@ public class MainWindow extends Application {
             	} else {
             		System.out.println("subscribe    "+selectedNoSubscribeTopic);
             		try {
-						 InterfaceSubjectDiscussion temp = forum.registrationOnSubject(client.getUserLogin(), selectedNoSubscribeTopic);
-						 client.putSubject(temp);
-						 subscribeTitle.add(temp.getTitle());
-						 subscribeTopics.add(temp.getTitle());
-						 subscribeBtn.setText("Se desabonner");
+						try {
+							InterfaceSubjectDiscussion temp = forum.registrationOnSubject(client.getUserLogin(), selectedNoSubscribeTopic);
+							 client.putSubject(temp);
+							 subscribeTitle.add(temp.getTitle());
+							 subscribeTopics.add(temp.getTitle());
+							 subscribeBtn.setText("Se desabonner");
+						} catch (SubjectDidNotExistsException
+								| ClientDidNotExistsException
+								| ClientAlreadyRegisteredException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+
 						 
 					} catch (RemoteException e) {
 						// TODO Auto-generated catch block
@@ -286,6 +305,9 @@ public class MainWindow extends Application {
 						} catch (RemoteException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
+						} catch (SubjectAlreadyExistsException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
 					}
                 });
@@ -310,13 +332,17 @@ public class MainWindow extends Application {
             @Override
             public void handle(ActionEvent event) {
             	try {
-					boolean done = forum.deleteSubject(client.getUserLogin(), topicList.getSelectionModel().getSelectedItem());
-					if(done){
-						client.deRegistration(topicList.getSelectionModel().getSelectedItem());
-						subscribeTopics.remove(topicList.getSelectionModel().getSelectedItem());
-						topics.remove(topicList.getSelectionModel().getSelectedItem());
-					}
+					forum.deleteSubject(client.getUserLogin(), topicList.getSelectionModel().getSelectedItem());
+					client.deRegistration(topicList.getSelectionModel().getSelectedItem());
+					subscribeTopics.remove(topicList.getSelectionModel().getSelectedItem());
+					topics.remove(topicList.getSelectionModel().getSelectedItem());
 				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SubjectDidNotExistsException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (DeletionPermitionDeletionException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -378,66 +404,11 @@ public class MainWindow extends Application {
 		try {
 			for(Object o: subject.getMessages()){
 				InterfaceMessage m = (InterfaceMessage)o;
-				messagesDisplay.add(new Message(m.getDate().getTime(), m.getAuthor(), m.getMessage()));
+				messagesDisplay.add(new Message(m.getDate().getTimeInMillis(), m.getAuthor(), m.getMessage()));
 			}
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-	}
-	
-	public static class Message implements Comparable<Message>{
-		
-		private final SimpleStringProperty date;
-	    private final SimpleStringProperty author;
-	    private final SimpleStringProperty message;
-	    private Long dateMilli;
-
-	    private Message(Long date, String author, String message) {
-	    	this.dateMilli = date;
-	    	Date temp = new Date(this.dateMilli);
-	        this.date = new SimpleStringProperty(temp.toGMTString());
-	        this.author = new SimpleStringProperty(author);
-	        this.message = new SimpleStringProperty(message);
-	    }
-
-	    public String getDate() {
-	        return date.get();
-	    }
-
-	    public void setDate(String date) {
-	        this.date.set(date);
-	    }
-
-	    public String getAuthor() {
-	        return author.get();
-	    }
-
-	    public void setAuthor(String author) {
-	        this.author.set(author);
-	    }
-
-	    public String getMessage() {
-	        return message.get();
-	    }
-
-	    public void setMessage(String message) {
-	        this.message.set(message);
-	    }
-
-		public Long getDateMilli() {
-			return dateMilli;
-		}
-
-		public void setDateMilli(Long dateMilli) {
-			this.dateMilli = dateMilli;
-		}
-
-		@Override
-		public int compareTo(Message arg0) {
-			Date d = new Date(getDateMilli());
-			Date d2 = new Date(arg0.getDateMilli());
-			return d.compareTo(d2);
 		}
 	}
 }
