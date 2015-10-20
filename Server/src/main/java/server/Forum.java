@@ -1,6 +1,7 @@
 package server;
 
 import java.io.File;
+import java.io.Serializable;
 import java.rmi.*;
 import java.rmi.server.*;
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ import org.mapdb.*;
  * This class is used to manage the forum, this includes clients and subjects.
  * The backup of client and subject list is manage here.
  */
-public class Forum extends UnicastRemoteObject implements InterfaceServerForum{
+public class Forum extends UnicastRemoteObject implements InterfaceServerForum, Serializable{
 	
 
 	private Map<String, Subject> subjects_;

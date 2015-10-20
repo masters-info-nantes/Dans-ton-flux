@@ -35,8 +35,10 @@ import javafx.stage.Stage;
 
 public class LoginWindow extends Application{
 	
+	Registry registry;
+	InterfaceServerForum forum = null;
 	@Override
-    public void start(final Stage primaryStage) throws RemoteException, NotBoundException { 
+    public void start(final Stage primaryStage) throws NotBoundException { 
 		
 		//window on the middle top of the screen
 		 Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
@@ -91,9 +93,15 @@ public class LoginWindow extends Application{
         grid.add(actiontarget, 1, 6);
         
         
-        /*forum*/
-		Registry registry = LocateRegistry.getRegistry("localhost", 8080);
-		final InterfaceServerForum forum = (InterfaceServerForum) registry.lookup("Forum");
+        /*forum*/		
+		try {
+			registry = LocateRegistry.getRegistry("localhost", 8080);
+			forum = (InterfaceServerForum) registry.lookup("Forum");
+
+		} catch (RemoteException e3) {
+			// TODO fenetre pour dire que le forum est inaccessible
+			e3.printStackTrace();
+		}
 
         btn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -105,13 +113,13 @@ public class LoginWindow extends Application{
 				try {
 					client = new Client();
 				} catch (RemoteException e2) {
-					// TODO Auto-generated catch block
 					e2.printStackTrace();
 				}
 
 				try {
 					sujet = forum.connexion(userTextField.getText(), pwBox.getText(), client);
 				} catch (RemoteException e1) {
+					//TODO faire une popup pour dire qu'il y a un probleme de connexion avec le serveur
 					e1.printStackTrace();
 				} catch (WrongClientException | WrongPasswordException e1) {
 					 actiontarget.setFill(Color.FIREBRICK);
@@ -127,7 +135,6 @@ public class LoginWindow extends Application{
 	                 try {
 						stage.start(primaryStage);
 					} catch (RemoteException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 	                 
@@ -150,7 +157,7 @@ public class LoginWindow extends Application{
 					    actiontarget.setText("Error");
 					}
 				} catch (RemoteException e1) {
-					// TODO Auto-generated catch block
+					// TODO popup pour connexion impossible
 					e1.printStackTrace();
 				}
 

@@ -1,5 +1,6 @@
 package server;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Calendar;
@@ -19,7 +20,7 @@ import com.interfaces.middleware.InterfacesClientServer.*;
  * @author Franck
  * This class is used to manege subjects. This classe save messages in storage file
  */
-public class Subject extends UnicastRemoteObject implements InterfaceSubjectDiscussion{
+public class Subject extends UnicastRemoteObject implements InterfaceSubjectDiscussion, Serializable{
 	
 	private String title_;
 	private String author_;

@@ -127,13 +127,13 @@ public class MainWindow extends Application {
             		try {
 						try {
 							forum.deRegistrationOnSubject(client.getUserLogin(), topicList.getSelectionModel().getSelectedItem());
-						} catch (ClientDidNotExistsException
-								| SubjectDidNotExistsException e) {
-							// TODO Auto-generated catch block
+						} catch (SubjectDidNotExistsException e) {
+							e.printStackTrace();
+						} catch (ClientDidNotExistsException e) {
 							e.printStackTrace();
 						}
 					} catch (RemoteException e) {
-						// TODO Auto-generated catch block
+						// TODO popup probleme de connexion => on revient à la fenêtre connexion
 						e.printStackTrace();
 					}
             		
@@ -149,13 +149,12 @@ public class MainWindow extends Application {
 						} catch (SubjectDidNotExistsException
 								| ClientDidNotExistsException
 								| ClientAlreadyRegisteredException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 
 						 
 					} catch (RemoteException e) {
-						// TODO Auto-generated catch block
+						// TODO popup probleme de connexion => on revient à la fenêtre connexion
 						e.printStackTrace();
 					}
             		catch(NullPointerException e2){
@@ -236,7 +235,7 @@ public class MainWindow extends Application {
 					messagesDisplay.add(new Message(GregorianCalendar.getInstance().getTimeInMillis(), client.userLogin, userMessage.getText()));
 					userMessage.setText("");
 				} catch (RemoteException e) {
-					// TODO Auto-generated catch block
+					// TODO popup probleme de connexion => on revient à la fenêtre connexion
 					e.printStackTrace();
 				}
             }
@@ -303,10 +302,10 @@ public class MainWindow extends Application {
 							topics.add(title.getText());
 							dialog.hide();
 						} catch (RemoteException e) {
-							// TODO Auto-generated catch block
+							// TODO popup probleme de connexion => on revient à la fenêtre connexion
 							e.printStackTrace();
 						} catch (SubjectAlreadyExistsException e) {
-							// TODO Auto-generated catch block
+							// TODO message pour dire que le sujet existe déjà
 							e.printStackTrace();
 						}
 					}
@@ -337,13 +336,12 @@ public class MainWindow extends Application {
 					subscribeTopics.remove(topicList.getSelectionModel().getSelectedItem());
 					topics.remove(topicList.getSelectionModel().getSelectedItem());
 				} catch (RemoteException e) {
-					// TODO Auto-generated catch block
+					// TODO popup probleme de connexion => on revient à la fenêtre connexion
 					e.printStackTrace();
 				} catch (SubjectDidNotExistsException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (DeletionPermitionDeletionException e) {
-					// TODO Auto-generated catch block
+					// TODO popup pour dire que le sujet ne peut pas être supprimé, les conditions sont : être l'auteur du sujet et que le denrier message envoyé date de plus d'un an
 					e.printStackTrace();
 				}
             }
@@ -407,7 +405,7 @@ public class MainWindow extends Application {
 				messagesDisplay.add(new Message(m.getDate().getTimeInMillis(), m.getAuthor(), m.getMessage()));
 			}
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
+			// TODO popup probleme de connexion => on revient à la fenêtre connexion
 			e.printStackTrace();
 		}
 	}

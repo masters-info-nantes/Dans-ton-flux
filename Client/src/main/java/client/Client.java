@@ -1,5 +1,6 @@
 package client;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Arrays;
@@ -11,7 +12,7 @@ import com.interfaces.middleware.InterfacesClientServer.InterfaceSubjectDiscussi
 
 
 
-public class Client extends UnicastRemoteObject implements InterfaceDisplayClient {
+public class Client extends UnicastRemoteObject implements InterfaceDisplayClient, Serializable {
 
 
 	String userLogin;
