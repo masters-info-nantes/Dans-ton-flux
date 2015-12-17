@@ -32,9 +32,9 @@ import org.mapdb.*;
  * This class is used to manage the forum, this includes clients and subjects.
  * The backup of client and subject list is manage here.
  */
+@SuppressWarnings("serial")
 public class Forum extends UnicastRemoteObject implements InterfaceServerForum, Serializable{
 	
-
 	private Map<String, Subject> subjects_;
 	private Map<String, Client> clients_;
 	private Map<String, String> dbTopics_;
@@ -82,7 +82,7 @@ public class Forum extends UnicastRemoteObject implements InterfaceServerForum, 
 		for(Map.Entry<String, String> m: this.dbClients_.entrySet()){
 			clients_.put(m.getKey(), new Client(m.getKey(), m.getValue(), this.db_));
 			Set<String> titles = db_.treeSet("client." + m.getKey() + ".topics");
-			System.out.println(m.getKey());
+
 			if(db_.exists("client." + m.getKey() + ".topics")){
 				List<Subject> userSubjects = new ArrayList<Subject>();
 				for(String s:titles){

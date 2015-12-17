@@ -2,14 +2,12 @@ package client;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.application.Application;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -28,7 +26,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
@@ -46,7 +43,7 @@ import com.interfaces.middleware.InterfacesClientServer.SubjectDidNotExistsExcep
 
 public class MainWindow extends Application {
     
-	static Client client;
+	private static Client client;
 	InterfaceServerForum forum;
 	List<String> subscribeTitle;
 	static String selectedNoSubscribeTopic = "";
@@ -64,14 +61,14 @@ public class MainWindow extends Application {
 	private Stage primaryStage;
 	
 	public MainWindow(Client client, InterfaceServerForum forum){
-		this.client = client;
+		MainWindow.client = client;
 		this.forum = forum;
     	subscribeTitle = new ArrayList<String>();
 	}
 	
-	public static void notifyMessage (String title, String message, String author, String date){
+	public static void notifyMessage (String title, InterfaceMessage message) throws RemoteException{
 		if(subscribeList.getSelectionModel().getSelectedItem().equals(title)){
-			messagesDisplay.add(new Message(Long.parseLong(date), author, message));
+			messagesDisplay.add(new Message(message.getDate(), message.getAuthor(), message.getMessage()));
 		}
 	}
 	
@@ -96,7 +93,7 @@ public class MainWindow extends Application {
     	
     	/** Fenetre **/
     	final Scene scene = new Scene(root, 860, 780);
-    	scene.getStylesheets().add(MainWindow.class.getResource("MainWindow.css").toExternalForm());
+    	scene.getStylesheets().add(MainWindow.class.getResource("/MainWindow.css").toExternalForm());
     	
 		//window on the middle of the screen
 		Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
@@ -119,14 +116,14 @@ public class MainWindow extends Application {
     	subscribeBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-            	if(client.isSubscribed(topicList.getSelectionModel().getSelectedItem())) {
+            	if(getClient().isSubscribed(topicList.getSelectionModel().getSelectedItem())) {
             		subscribeBtn.setText("S'abonner");
-            		client.deRegistration(topicList.getSelectionModel().getSelectedItem());
+            		getClient().deRegistration(topicList.getSelectionModel().getSelectedItem());
             		MainWindow.subscribeTopics.remove(topicList.getSelectionModel().getSelectedItem());
             		subscribeTitle.remove(topicList.getSelectionModel().getSelectedItem());
             		try {
 						try {
-							forum.deRegistrationOnSubject(client.getUserLogin(), topicList.getSelectionModel().getSelectedItem());
+							forum.deRegistrationOnSubject(getClient().getUserLogin(), topicList.getSelectionModel().getSelectedItem());
 						} catch (SubjectDidNotExistsException e) {
 							e.printStackTrace();
 						} catch (ClientDidNotExistsException e) {
@@ -141,8 +138,8 @@ public class MainWindow extends Application {
             		System.out.println("subscribe    "+selectedNoSubscribeTopic);
             		try {
 						try {
-							InterfaceSubjectDiscussion temp = forum.registrationOnSubject(client.getUserLogin(), selectedNoSubscribeTopic);
-							 client.putSubject(temp);
+							InterfaceSubjectDiscussion temp = forum.registrationOnSubject(getClient().getUserLogin(), selectedNoSubscribeTopic);
+							 getClient().putSubject(temp);
 							 subscribeTitle.add(temp.getTitle());
 							 subscribeTopics.add(temp.getTitle());
 							 subscribeBtn.setText("Se desabonner");
@@ -165,7 +162,8 @@ public class MainWindow extends Application {
         });
 	}
     
-    public void addForumZone(){
+    @SuppressWarnings("unchecked")
+	public void addForumZone(){
 		/** Zone du forum**/
 		tableOfMessages.setEditable(true);
 		messagesDisplay.setAll(messagesDisplay.sorted());
@@ -231,8 +229,8 @@ public class MainWindow extends Application {
             public void handle(ActionEvent event) {
                 System.out.println("Message send");
                 try {
-					client.getSubject(selectedSubscribeTopic).broadcastMessage(userMessage.getText(), client.getUserLogin());
-					messagesDisplay.add(new Message(GregorianCalendar.getInstance().getTimeInMillis(), client.userLogin, userMessage.getText()));
+					getClient().getSubject(selectedSubscribeTopic).broadcastMessage(userMessage.getText(), getClient().getUserLogin());
+					messagesDisplay.add(new Message(GregorianCalendar.getInstance(), getClient().userLogin, userMessage.getText()));
 					userMessage.setText("");
 				} catch (RemoteException e) {
 					// TODO popup probleme de connexion => on revient à la fenêtre connexion
@@ -265,7 +263,7 @@ public class MainWindow extends Application {
 			@Override
 			public void handle(MouseEvent arg0) {
 				System.out.println(selectedNoSubscribeTopic);
-				if(client.isSubscribed(topicList.getSelectionModel().getSelectedItem())) {
+				if(getClient().isSubscribed(topicList.getSelectionModel().getSelectedItem())) {
             		subscribeBtn.setText("Se desabonner");
 				}
 				else{
@@ -298,7 +296,7 @@ public class MainWindow extends Application {
 					public void handle(ActionEvent arg0) {
 						// TODO Auto-generated method stub
 						try {
-							forum.sendSubject(client.userLogin, title.getText());
+							forum.sendSubject(getClient().userLogin, title.getText());
 							topics.add(title.getText());
 							dialog.hide();
 						} catch (RemoteException e) {
@@ -331,8 +329,8 @@ public class MainWindow extends Application {
             @Override
             public void handle(ActionEvent event) {
             	try {
-					forum.deleteSubject(client.getUserLogin(), topicList.getSelectionModel().getSelectedItem());
-					client.deRegistration(topicList.getSelectionModel().getSelectedItem());
+					forum.deleteSubject(getClient().getUserLogin(), topicList.getSelectionModel().getSelectedItem());
+					getClient().deRegistration(topicList.getSelectionModel().getSelectedItem());
 					subscribeTopics.remove(topicList.getSelectionModel().getSelectedItem());
 					topics.remove(topicList.getSelectionModel().getSelectedItem());
 				} catch (RemoteException e) {
@@ -353,7 +351,7 @@ public class MainWindow extends Application {
     	
     	/* Abonnements */
     	subscribeList = new ListView<String>();
-    	Object[] subscribeTitles = client.getSubscirbeTitles();
+    	Object[] subscribeTitles = getClient().getSubscirbeTitles();
     	for(Object o: subscribeTitles){
     	    subscribeTitle.add((String)o);
     	} 
@@ -398,15 +396,23 @@ public class MainWindow extends Application {
 
 	public void changeDisplayMessage(String subjectTitle){
 		messagesDisplay.clear();
-		InterfaceSubjectDiscussion subject = client.getSubject(subjectTitle);
+		InterfaceSubjectDiscussion subject = getClient().getSubject(subjectTitle);
 		try {
 			for(Object o: subject.getMessages()){
 				InterfaceMessage m = (InterfaceMessage)o;
-				messagesDisplay.add(new Message(m.getDate().getTimeInMillis(), m.getAuthor(), m.getMessage()));
+				messagesDisplay.add(new Message(m.getDate(), m.getAuthor(), m.getMessage()));
 			}
 		} catch (RemoteException e) {
 			// TODO popup probleme de connexion => on revient à la fenêtre connexion
 			e.printStackTrace();
 		}
+	}
+
+	public static Client getClient() {
+		return client;
+	}
+
+	public static void setClient(Client client) {
+		MainWindow.client = client;
 	}
 }

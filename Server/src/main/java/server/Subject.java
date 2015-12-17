@@ -22,6 +22,11 @@ import com.interfaces.middleware.InterfacesClientServer.*;
  */
 public class Subject extends UnicastRemoteObject implements InterfaceSubjectDiscussion, Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private String title_;
 	private String author_;
 	private SortedSet<InterfaceMessage> messages_;
@@ -121,7 +126,9 @@ public class Subject extends UnicastRemoteObject implements InterfaceSubjectDisc
 	public void broadcastMessage(String message, String author) throws RemoteException{
 		
 		Calendar cal = new GregorianCalendar();
-		addMessage(message, author, cal);
+		Message newMessage = new Message(message, author, cal);
+		this.messages_.add(newMessage);
+		
 		this.dbIdMessages.add(author+"|"+cal.getTimeInMillis());
 		this.db.atomicStringCreate("topic." + this.title_ + ".messages."+author+"|"+cal.getTimeInMillis(), message);
 
@@ -129,7 +136,7 @@ public class Subject extends UnicastRemoteObject implements InterfaceSubjectDisc
 			if(!entry.getKey().equals(author)){
 				try {
 					if(entry.getValue().getInter() != null){
-						entry.getValue().getInter().showMessage(this.title_, message, author, cal.getTimeInMillis()+"");
+						entry.getValue().getInter().showMessage(this.title_, newMessage);
 					}
 				} catch (RemoteException e) {
 					entry.getValue().setInter(null);

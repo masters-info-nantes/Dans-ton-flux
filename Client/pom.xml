@@ -34,6 +34,12 @@
 
 			</plugins>
 		</pluginManagement>
+		
+		<resources>
+     <resource>
+       <directory>ressources</directory>
+     </resource>
+   </resources>
 	</build>
 	 <dependencies>
       <dependency>
@@ -41,5 +47,9 @@
 			<artifactId>InterfacesClientServer</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
    		</dependency>
+   		
+	
    </dependencies>
+   
+   
 </project>

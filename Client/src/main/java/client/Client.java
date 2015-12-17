@@ -3,17 +3,17 @@ package client;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
 
 import com.interfaces.middleware.InterfacesClientServer.InterfaceDisplayClient;
+import com.interfaces.middleware.InterfacesClientServer.InterfaceMessage;
 import com.interfaces.middleware.InterfacesClientServer.InterfaceSubjectDiscussion;
 
 
 
+@SuppressWarnings("serial")
 public class Client extends UnicastRemoteObject implements InterfaceDisplayClient, Serializable {
-
 
 	String userLogin;
 	Map<String, InterfaceSubjectDiscussion> subcribedTopics;
@@ -60,10 +60,10 @@ public class Client extends UnicastRemoteObject implements InterfaceDisplayClien
 		return subcribedTopics.containsKey(title);
 	}
 	@Override
-	public void showMessage(String subjectTitle, String userMessage, String author, String date) throws RemoteException {
+	public void showMessage(String subjectTitle, InterfaceMessage message) throws RemoteException {
 		// TODO Auto-generated method stub
 		// ajoute le message au sujet donné
-		MainWindow.notifyMessage(subjectTitle, userMessage, author, date);
+		MainWindow.notifyMessage(subjectTitle, message);
 		
 	}
 	

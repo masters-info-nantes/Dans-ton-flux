@@ -1,6 +1,7 @@
 package client;
 
-import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import javafx.beans.property.SimpleStringProperty;
 
@@ -9,17 +10,29 @@ public class Message implements Comparable<Message>{
 	private final SimpleStringProperty date;
     private final SimpleStringProperty author;
     private final SimpleStringProperty message;
-    private Long dateMilli;
-
-    public Message(Long date, String author, String message) {
-    	this.dateMilli = date;
-    	Date temp = new Date(this.dateMilli);
-        this.date = new SimpleStringProperty(temp.toGMTString());
+    private Calendar date_cal;
+    
+    public Message(Calendar date, String author, String message) {
+   	
+    	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    	
+    	this.date_cal = date;
+        this.date = new SimpleStringProperty(sdf.format(date.getTime()));
         this.author = new SimpleStringProperty(author);
         this.message = new SimpleStringProperty(message);
     }
 
-    public String getDate() {
+    public Calendar getDate_cal() {
+		return date_cal;
+	}
+
+
+	public void setDate_cal(Calendar date_cal) {
+		this.date_cal = date_cal;
+	}
+
+
+	public String getDate() {
         return date.get();
     }
 
@@ -43,18 +56,8 @@ public class Message implements Comparable<Message>{
         this.message.set(message);
     }
 
-	public Long getDateMilli() {
-		return dateMilli;
-	}
-
-	public void setDateMilli(Long dateMilli) {
-		this.dateMilli = dateMilli;
-	}
-
 	@Override
 	public int compareTo(Message arg0) {
-		Date d = new Date(getDateMilli());
-		Date d2 = new Date(arg0.getDateMilli());
-		return d.compareTo(d2);
+		return this.date_cal.compareTo(arg0.getDate_cal());
 	}
 }

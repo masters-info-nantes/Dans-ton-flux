@@ -12,6 +12,7 @@ import com.interfaces.middleware.InterfacesClientServer.*;
  * @author Franck
  * This class is used to manege messages, it implements comparable interface. Messages are storted with the date order, the oldest element arrives in first position.
  */
+@SuppressWarnings("serial")
 public class Message extends UnicastRemoteObject implements InterfaceMessage, Comparable<Message>, Serializable{
 	
 	private String message_;

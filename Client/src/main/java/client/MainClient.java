@@ -2,7 +2,6 @@ package client;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.security.Permission;
 
 public class MainClient {
 	
