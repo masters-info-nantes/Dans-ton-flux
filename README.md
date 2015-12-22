@@ -14,7 +14,7 @@ $ mvn install
 
 In the Dans-ton-flux directory :
 ```
-$ cd server
+$ cd Server
 $ mvn compile exec:java
 ```
 
@@ -22,7 +22,7 @@ $ mvn compile exec:java
 
 In the Dans-ton-flux directory :
 ```
-$ cd client
+$ cd Client
 $ mvn compile exec:java
 ```
 
