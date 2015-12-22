@@ -317,7 +317,7 @@ public class MainWindow extends Application {
                 dialogVbox.setSpacing(10);
                 
                 Scene dialogScene = new Scene(dialogVbox, 300, 80);
-                dialogScene.getStylesheets().add(MainWindow.class.getResource("MainWindow.css").toExternalForm());
+                dialogScene.getStylesheets().add(MainWindow.class.getResource("/MainWindow.css").toExternalForm());
                 dialog.setScene(dialogScene);
                 dialog.show();
             }

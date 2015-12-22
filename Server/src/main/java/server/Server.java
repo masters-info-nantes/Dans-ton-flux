@@ -22,7 +22,7 @@ public class Server {
 		
 		try {
 			forum = new Forum();
-			Registry registry = LocateRegistry.createRegistry(8080);
+			Registry registry = LocateRegistry.createRegistry(9876);
 			registry.bind("Forum", forum);
 			System.out.println("Server start");
 			while(true){

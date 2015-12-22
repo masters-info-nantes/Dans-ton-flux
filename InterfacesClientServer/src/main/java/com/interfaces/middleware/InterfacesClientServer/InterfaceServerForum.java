@@ -21,19 +21,19 @@ public interface InterfaceServerForum extends Remote{
 	 */
 	public Object[] connexion(String login, String password, InterfaceDisplayClient display) throws RemoteException, WrongClientException, WrongPasswordException;
 	/*
-	 * return false if the subject already exists or if the user doesn't exist
+	 * return exception if the subject already exists or if the user doesn't exist
 	 */
 	public void sendSubject(String author, String title) throws RemoteException, SubjectAlreadyExistsException;
 	/*
-	 * return false if the client already exists
+	 * return exception if the client already exists
 	 */
 	public void registrationOnForum(String login, String password) throws RemoteException, WrongClientException, WrongPasswordException, ClientAlreadyRegisteredException;
 	/*
-	 * return false if the client don't follow the subject
+	 * return exception if the client don't follow the subject
 	 */
 	public void deRegistrationOnSubject(String login, String title) throws RemoteException, ClientDidNotExistsException, SubjectDidNotExistsException;
 	/*
-	 * return false if the client isn't the author of the subject
+	 * return exception if the client isn't the author of the subject
 	 */
 	public void deleteSubject(String author, String title) throws RemoteException, SubjectDidNotExistsException, DeletionPermitionDeletionException;
 }

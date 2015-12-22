@@ -270,5 +270,8 @@ public class Forum extends UnicastRemoteObject implements InterfaceServerForum, 
 		else if(!subjects_.containsKey(title)){
 			throw new SubjectDidNotExistsException();
 		}
+		else{
+			throw new DeletionPermitionDeletionException();
+		}
 	}
 }

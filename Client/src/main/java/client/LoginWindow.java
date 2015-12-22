@@ -90,7 +90,7 @@ public class LoginWindow extends Application{
         
         /*forum*/		
 		try {
-			registry = LocateRegistry.getRegistry("localhost", 8080);
+			registry = LocateRegistry.getRegistry("localhost", 9876);
 			forum = (InterfaceServerForum) registry.lookup("Forum");
 
 		} catch (RemoteException e3) {
